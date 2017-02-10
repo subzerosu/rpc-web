@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "cane.brothers.spring.google.spreadsheet.id",
+    "type": "java.lang.String",
+    "description": "google spreadsheet id. Example: 1-X3OXx0dVPHSebB-cZrUNHLuSclCcCP-nfPVRr1Xxx9"
+  },
+  {
+    "name": "cane.brothers.spring.google.spreadsheet.sheet.name",
+    "type": "java.lang.String",
+    "description": "google spreadsheet tab name. Example: Sheet1"
+  }
+]}
