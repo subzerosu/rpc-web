@@ -4,7 +4,7 @@
 
 	<groupId>cane.brothers</groupId>
 	<artifactId>rpc-web</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.7</version>
 
 	<name>rpc-web</name>
 	<description>rpc web app</description>
