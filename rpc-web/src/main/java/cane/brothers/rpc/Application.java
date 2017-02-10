@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 public class Application {
 
 	public static void main(String[] args) {
+	//	SpringApplication.run(Application.class, " -Djava.net.useSystemProxies=true");
+	//	SpringApplication.run(Application.class, " -Dhttp.proxyHost=vrnsrv-proxy -Dhttp.proxyPort=8080");
 		SpringApplication.run(Application.class, args);
 	}
 }
