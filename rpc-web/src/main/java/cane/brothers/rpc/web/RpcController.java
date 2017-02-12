@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cane.brothers.rpc.service.fc.Rpc;
+import cane.brothers.rpc.service.fc.RpcBatch;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -21,7 +21,7 @@ public class RpcController extends BaseController {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private Rpc rpc;
+	private RpcBatch rpc;
 
 	@GetMapping(value = "/rpc")
 	public ResponseEntity<List<String>> sendEmail() {
