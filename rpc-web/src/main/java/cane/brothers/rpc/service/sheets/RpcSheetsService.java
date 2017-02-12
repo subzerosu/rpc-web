@@ -27,56 +27,69 @@ public class RpcSheetsService implements RpcSheets {
 	@Override
 	public Set<PostEntry> getPostEntries() {
 		Set<PostEntry> barcodes = new TreeSet<PostEntry>();
-
 		if (log.isDebugEnabled()) {
 			log.debug("Берем данные из таблицы в виде списка");
 		}
 
 		try {
 			List<List<Object>> table = googleSheet.readTable();
-
-			int rows = (table == null ? 0 : table.size());
-			// messages.addMessage1("В таблице баркодов " + rows + " строк.");
-			log.info("В таблице баркодов {} строк.", rows);
-
-			if (table != null) {
-				log.debug("Трансформируем в почтовые записи");
-				List<InvalidPostEntry> doubledBarcodes = new ArrayList<InvalidPostEntry>();
-
-				for (List<Object> row : table) {
-					if (row != null) {
-						String barcode = Objects.toString(row.get(0), null);
-						String article = Objects.toString(row.get(1), null);
-						String date = Objects.toString(row.get(2), null);
-
-						if (barcode != null) {
-							PostEntry pe = new PostEntry(barcode, article, date);
-							if (!barcodes.add(pe)) {
-								doubledBarcodes.add(new InvalidPostEntry(pe, InvalidReasons.DUPLICATE));
-								log.warn("баркод {} в наборе уже существует.", barcode);
-							}
-						} else {
-							log.warn("баркод не задан.");
-						}
-					}
-				}
-
-				// messages.addMessage1(" В исходных данных дублей: " +
-				// doubledBarcodes.size());
-				log.info(" В исходных данных дублей: {}.", doubledBarcodes.size());
-
-			} else {
-				log.error("Нет исходного списка данных.");
-			}
-
-			// messages.addMessage1(" Уникальных строк с баркодами: " +
-			// barcodes.size());
-			log.info(" Уникальных строк с баркодами: {}", barcodes.size());
+			barcodes = castTable(table);
 
 		} catch (IOException e) {
 			// log.error("Проблемы c google сервисом: ", e);
 			log.error("Проблемы с получением строковых даных: ", e);
 		}
+
+		return barcodes;
+	}
+
+	@Override
+	public Set<PostEntry> castTable(List<List<Object>> table) {
+		Set<PostEntry> barcodes = new TreeSet<PostEntry>();
+
+		int rows = (table == null ? 0 : table.size());
+		// messages.addMessage1("В таблице баркодов " + rows + " строк.");
+		log.info("В таблице баркодов {} строк.", rows);
+
+		if (table != null) {
+			log.debug("Трансформируем в почтовые записи");
+			List<InvalidPostEntry> doubledBarcodes = new ArrayList<InvalidPostEntry>();
+
+			for (List<Object> row : table) {
+				if (row != null) {
+					String barcode = Objects.toString(row.get(0), null);
+					String article = Objects.toString(row.get(1), null);
+					String date = Objects.toString(row.get(2), null);
+
+					if (barcode != null) {
+						if (barcode.startsWith("#")) {
+							log.debug("Пропускаем header.");
+						} else {
+							PostEntry pe = new PostEntry(barcode, article, date);
+							if (!barcodes.add(pe)) {
+								doubledBarcodes.add(new InvalidPostEntry(pe, InvalidReasons.DUPLICATE));
+								log.warn("Баркод {} в наборе уже существует.", barcode);
+							} else {
+								log.debug("Считали ПО: {}.", pe);
+							}
+						}
+					} else {
+						log.warn("Баркод не задан.");
+					}
+				}
+			}
+
+			// messages.addMessage1(" В исходных данных дублей: " +
+			// doubledBarcodes.size());
+			log.info("В исходных данных дублей: {}.", doubledBarcodes.size());
+
+		} else {
+			log.error("Нет исходного списка данных.");
+		}
+
+		// messages.addMessage1(" Уникальных строк с баркодами: " +
+		// barcodes.size());
+		log.info(" Уникальных строк с баркодами: {}", barcodes.size());
 
 		return barcodes;
 	}

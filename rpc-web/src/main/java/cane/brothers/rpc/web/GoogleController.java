@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cane.brothers.rpc.config.GoogleProperties;
 import cane.brothers.rpc.data.PostEntry;
+import cane.brothers.rpc.service.fc.RpcBatch;
 import cane.brothers.rpc.service.sheets.RpcSheets;
 
 @RestController
@@ -28,6 +29,9 @@ public class GoogleController extends BaseController {
 
 	@Autowired
 	private RpcSheets sheets;
+
+	@Autowired
+	private RpcBatch fc;
 
 	@GetMapping(value = "/google")
 	public ResponseEntity<List<String>> readProperties() {
@@ -45,10 +49,9 @@ public class GoogleController extends BaseController {
 	public ResponseEntity<Set<PostEntry>> readTable() {
 		logger.info(" get '/api/table'");
 
-		Set<PostEntry> responseBody = sheets.getPostEntries();
-		logger.info("responce " + responseBody);
+		Set<PostEntry> table = sheets.getPostEntries();
 
-		return new ResponseEntity<Set<PostEntry>>(responseBody, HttpStatus.OK);
+		return new ResponseEntity<Set<PostEntry>>(table, HttpStatus.OK);
 	}
 
 }

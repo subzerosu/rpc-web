@@ -1,18 +1,27 @@
 package cane.brothers.rpc.data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Простой класс описывающий почтовое отправление которое было обработано, т.е.
  * история запросов была получена.
- * 
+ *
  * @author cane
  */
 public class TreatmentPostEntry extends PostEntry {
 
 	private boolean isTreated;
 
+	private Set<PostError> errors = new HashSet<>();
+
+	private List<PostOperation> operations = new ArrayList<>();
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param post
 	 *            post entry
 	 */
@@ -22,7 +31,7 @@ public class TreatmentPostEntry extends PostEntry {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param post
 	 *            post entry
 	 * @param treated
@@ -39,6 +48,14 @@ public class TreatmentPostEntry extends PostEntry {
 
 	public void setTreated(boolean isTreated) {
 		this.isTreated = isTreated;
+	}
+
+	public Set<PostError> getErrors() {
+		return errors;
+	}
+
+	public List<PostOperation> getOperations() {
+		return operations;
 	}
 
 	@Override
