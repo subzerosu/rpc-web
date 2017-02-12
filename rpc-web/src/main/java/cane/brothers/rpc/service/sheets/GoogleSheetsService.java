@@ -19,24 +19,22 @@ import cane.brothers.rpc.service.GoogleConnection;
 public class GoogleSheetsService implements GoogleSheets {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private GoogleProperties properties;
-	
+
 	@Autowired
 	private GoogleConnection google;
-
 
 	@Override
 	public List<List<Object>> readTable() throws IOException {
 		List<List<Object>> table = new ArrayList<List<Object>>();
 		Sheets service = google.getSheetsService();
-		if(google != null) {
+		if (google != null) {
 			table = readTable(service, properties.getId(), properties.getSheet().getName());
 		}
 		return table;
 	}
-
 
 	private List<List<Object>> readTable(Sheets service, String spreadsheetId, String sheetName) throws IOException {
 		ValueRange table = service.spreadsheets().values().get(spreadsheetId, sheetName).execute();
@@ -50,8 +48,7 @@ public class GoogleSheetsService implements GoogleSheets {
 	private void printTable(List<List<Object>> values) {
 		if (values == null || values.size() == 0) {
 			logger.debug("No data found.");
-		}
-		else {
+		} else {
 			logger.debug("read data: ");
 			for (List<Object> row : values) {
 				logger.debug(" " + row);
