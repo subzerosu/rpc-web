@@ -4,7 +4,7 @@
 
 	<groupId>cane.brothers</groupId>
 	<artifactId>rpc-web</artifactId>
-	<version>0.1.7</version>
+	<version>0.2.0</version>
 
 	<name>rpc-web</name>
 	<description>rpc web app</description>
@@ -49,12 +49,12 @@
 
 	<dependencies>
 
-		<!-- rpc wsld -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.russianpost</groupId> -->
-		<!-- <artifactId>rpc-wsld</artifactId> -->
-		<!-- <version>1.2</version> -->
-		<!-- </dependency> -->
+		<!-- russian post -->
+		<dependency>
+			<groupId>org.russianpost</groupId>
+			<artifactId>rpc-batch-wsdl</artifactId>
+			<version>1.1</version>
+		</dependency>
 
 		<!-- Spring -->
 		<dependency>
@@ -68,9 +68,15 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 		</dependency>
+
 
 		<!-- <dependency> -->
 		<!-- <groupId>org.springframework.boot</groupId> -->
