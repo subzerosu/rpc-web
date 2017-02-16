@@ -17,7 +17,7 @@ import cane.brothers.rpc.service.fc.RpcBatch;
 import cane.brothers.rpc.service.sheets.RpcSheets;
 
 @RestController
-@RequestMapping(value = "/api/rpc")
+@RequestMapping(value = "/api/rpc/ticket")
 public class RpcController extends BaseController {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -47,14 +47,14 @@ public class RpcController extends BaseController {
 	// }
 	// }
 
-	@GetMapping(value = "/ticket")
+	@GetMapping()
 	public ResponseEntity<String> getRpcTicket() {
 		Set<PostEntry> barcodes = rpcSheet.getPostEntries();
 		String ticket = rpcBatch.sendRequest(barcodes);
 		return new ResponseEntity<String>(ticket, HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/ticket")
+	@PostMapping()
 	public ResponseEntity<Set<PostEntry>> getResponceByRpcTicket(String ticket) {
 		// TODO validate ticket format
 		Set<PostEntry> barcodes = rpcBatch.getResponce(ticket);
