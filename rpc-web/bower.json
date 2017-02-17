@@ -1,0 +1,38 @@
+{
+  "name": "rpc-bower",
+  "authors": [
+    "cane <webcane@ya.ru>"
+  ],
+  "description": "bower installer for rpc client",
+  "keywords": [
+    "angular material",
+    "angular mdi"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets",
+    "CHANGELOG.md",
+    "grunt",
+    "js",
+    "less",
+    "nuget",
+    "package.*",
+    "sizzle",
+    "libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-material": "~1.1.3",
+    "angular-resource": "~1.6.1"
+  },
+  "install": {
+    "path": {
+      "css": "css",
+      "js": "js"
+    }
+  }
+}
