@@ -52,9 +52,9 @@
 
 		<!-- russian post -->
 		<dependency>
-			<groupId>org.russianpost</groupId>
-			<artifactId>rpc-batch-wsdl</artifactId>
-			<version>1.1</version>
+			<groupId>cane.brothers</groupId>
+			<artifactId>rp-batch-wsdl</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<!-- Spring -->
