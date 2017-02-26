@@ -2,25 +2,31 @@ package cane.brothers.rpc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
-//@EnableOAuth2Sso
+import java.util.HashMap;
+import java.util.Map;
+
 @SpringBootApplication
 public class RpcApplication {
 
-	private static Logger logger = LoggerFactory.getLogger(RpcApplication.class);
+    private static Logger logger = LoggerFactory.getLogger(RpcApplication.class);
 
-    //@Value("${server.port}")
-    //private static String serverPort;
+    private static int serverPort = 5000;
 
-	public static void main(String[] args) {
-	//	SpringApplication.run(RpcApplication.class, " -Djava.net.useSystemProxies=true");
-	//	SpringApplication.run(RpcApplication.class, " -Dhttp.proxyHost=vrnsrv-proxy -Dhttp.proxyPort=8080");
-		SpringApplication.run(RpcApplication.class, args);
+    public static void main(String[] args) {
+        new SpringApplicationBuilder()
+                .sources(RpcApplication.class)
+                .properties(getAppProperties())
+                .run(args);
+        // TODO
+        logger.info("запускаем приложение по адресу: http://localhost:" + serverPort);
+    }
 
-		logger.info("запускаем приложение по адресу: http://localhost:" + 5000);
-	}
+    private static Map<String, Object> getAppProperties() {
+        Map<String, Object> appProperties = new HashMap<>();
+        appProperties.put("server.port", serverPort);
+        return appProperties;
+    }
 }
