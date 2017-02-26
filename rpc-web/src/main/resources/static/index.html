@@ -3,125 +3,93 @@
 <head>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <base href="/"/>
+
+    <meta name="description" content="rpc app"/>
 
     <link rel="stylesheet"
-          href="./assets/angular-material/angular-material.min.css">
+          href="./assets/angular-material/angular-material.css">
     <link rel="stylesheet"
           href="./assets/angular-material-icons/angular-material-icons.css">
-    <style>
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], .ng-cloak {
             display: none !important;
         }
     </style>
 
     <title>rpc</title>
 </head>
-<body ng-app="rpcApp" ng-strict-di ng-cloak>
-<!-- 	<ul> -->
-<!-- 		<li><a href="/api/table">show table</a></li> -->
-<!-- 		<li><a href="/api/google">show google properties</a></li> -->
-<!-- 		<li><a href="/api/email">send email</a></li> -->
-<!-- 		<li><a href="/api/rpc/ticket">send RPC request</a></li> -->
-<!-- 		<li><a href="/api/rpc/quartz">create task</a></li> -->
-<!-- 		<li><a href="/api/rpc/quartz/start">start task</a></li> -->
-<!-- 		<li><a href="/api/rpc/quartz/stop">stop task</a></li> -->
-<!-- 		<li> -->
-<!-- 			<form action="/api/rpc/ticket" method="post"> -->
-<!-- 				ticket:<br /> -->
-<!-- 				<input type="text" name="ticket"><br /> -->
-<!-- 				<input type="submit" value="Submit"> -->
-<!-- 			</form> -->
-<!-- 		</li> -->
-<!-- 	</ul> -->
 
-<md-content layout-fill ng-controller="mainPageCtrl" layout="row">
+<body ng-app="rpcApp" ng-controller="mainCtrl as home" ng-cloak>
 
-    <!--  sidebar -->
-    <md-sidenav class="md-sidenav-left" md-is-locked-open="$mdMedia('gt-sm')"
-                md-component-id="sidebar-left" md-whiteframe="4" layout="column">
-        <md-toolbar class="md-toolbar-tools">
-            <!-- TODO link -->
-            <h2 flex md-truncate>RPC</h2>
-        </md-toolbar>
+<md-content layout-fill layout="row"
+            ng-controller="authCtrl as auth">
 
-        <!-- menu -->
-        <md-menu>
-            <md-menu-content>
-                <md-menu-item class="md-3-line" ng-repeat="item in ['Задания', 'Статистика', 'Настройки']">
-                    <md-button href="#"
-                               aria-label="http://{{item}}"
-                               ng-click="ctrl.menuItemClick($index)"
-                               ng-class="{'md-no-ink md-primary': $index==0 }">
-                        <a>{{item}}</a>
-                    </md-button>
-                </md-menu-item>
-            </md-menu-content>
-        </md-menu>
-    </md-sidenav>
-
-    <div layout="column" layout-fill role="main" class="relative">
+    <div layout="column" layout-fill role="main">
         <md-toolbar layout="row" class="md-toolbar-tools">
-            <md-button class="md-icon-button md-primary md-accent" ng-click="toggleSidebar()"
-                       aria-label="toggle sidebar">
-                <!-- Close Sidenav -->
-                <!-- <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>  -->
-                <ng-md-icon icon="menu" size="32"></ng-md-icon>
+
+            <!-- login -->
+            <md-button class="md-icon-button"
+                       ng-click="auth.login()"
+                       aria-label="Login"
+                       ng-show="!auth.authenticated"
+                       title="Log in">
+                <ng-md-icon icon="login" size="32"></ng-md-icon>
             </md-button>
+
+            <!-- logout -->
+            <md-button class="md-icon-button"
+                       ng-click="auth.logout()"
+                       aria-label="Logout"
+                       ng-show="auth.authenticated"
+                       title="Log out">
+                <ng-md-icon icon="logout" size="32"></ng-md-icon>
+            </md-button>
+
+            <!-- TODO user name -->
+            <!--<div ng-show="auth.authenticated">-->
+                <!--Logged in as: <span ng-bind="auth.user"></span>-->
+            <!--</div>-->
+
         </md-toolbar>
 
         <!-- content -->
         <md-content flex id="content" md-scroll-y>
-            <ui-view layout="column" layout-fill layout-padding>
-                <md-card flex-gt-sm="90" flex-gt-md="80">
-                    <md-card-content>
-                        <h2>RPC</h2>
-                        <md-list>
-                            <md-item>
-                                <md-item-content>
-                                    <div class="md-tile-content">
-                                        <h3>what</h3>
-                                        <h4>who</h4>
-                                        <p>
-                                            notes
-                                        </p>
-                                    </div>
-                                </md-item-content>
-                            </md-item>
-                            <md-divider></md-divider>
-                            </md-item>
-                        </md-list>
-                    </md-card-content>
-                </md-card>
-            </ui-view>
+<!--            <div ng-view layout="column" layout-fill layout-padding
+                 ng-show="authenticated">
+            </div>-->
         </md-content>
     </div>
 
 </md-content>
 
-<script type="text/javascript" src="./assets/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="./assets/jquery/dist/jquery.js"></script>
 
 <!-- Angular Material requires Angular.js Libraries -->
-<script type="text/javascript" src="./assets/angular/angular.min.js"></script>
+<script type="text/javascript" src="./assets/angular/angular.js"></script>
 <script type="text/javascript"
-        src="./assets/angular-animate/angular-animate.min.js"></script>
+        src="./assets/angular-animate/angular-animate.js"></script>
 <script type="text/javascript"
-        src="./assets/angular-aria/angular-aria.min.js"></script>
+        src="./assets/angular-aria/angular-aria.js"></script>
 <script type="text/javascript"
-        src="./assets/angular-messages/angular-messages.min.js"></script>
-
-<!-- Angualr resources -->
-<script type="text/javascript"
-        src="./assets/angular-resource/angular-resource.min.js"></script>
+        src="./assets/angular-messages/angular-messages.js"></script>
 
 <!-- Angular Material Library -->
 <script type="text/javascript"
-        src="./assets/angular-material/angular-material.min.js"></script>
+        src="./assets/angular-material/angular-material.js"></script>
 
 <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script> -->
 <script type="text/javascript"
-        src="./assets/angular-material-icons/angular-material-icons.min.js"></script>
+        src="./assets/angular-material-icons/angular-material-icons.js"></script>
+
+<script type="text/javascript"
+        src="./assets/angular-route/angular-route.js"></script>
 
 <script type="text/javascript" charset="utf-8" src="./app/app.js"></script>
-<script type="text/javascript" charset="utf-8" src="./app/pages/main/mainPage.controller.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/auth.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/pages/main.js"></script>
+
 </body>
 </html>
