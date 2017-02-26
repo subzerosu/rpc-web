@@ -22,46 +22,73 @@
     <title>rpc</title>
 </head>
 
-<body ng-app="rpcApp" ng-controller="mainCtrl as home" ng-cloak>
+<body ng-app="rpcApp" ng-cloak>
 
-<md-content layout-fill layout="row"
+<md-content layout-fill layout="column"
             ng-controller="authCtrl as auth">
 
-    <div layout="column" layout-fill role="main">
-        <md-toolbar layout="row" class="md-toolbar-tools">
+    <!-- content -->
+    <md-toolbar layout="row" class="md-toolbar-tools">
 
-            <!-- login -->
-            <md-button class="md-icon-button"
-                       ng-click="auth.login()"
-                       aria-label="Login"
-                       ng-show="!auth.authenticated"
-                       title="Log in">
-                <ng-md-icon icon="login" size="32"></ng-md-icon>
-            </md-button>
+        <md-button class="md-icon-button"
+                   aria-label="Icon"
+                   title="RPC">
+            <ng-md-icon icon="apps" size="24"></ng-md-icon>
+        </md-button>
 
-            <!-- logout -->
-            <md-button class="md-icon-button"
-                       ng-click="auth.logout()"
-                       aria-label="Logout"
-                       ng-show="auth.authenticated"
-                       title="Log out">
-                <ng-md-icon icon="logout" size="32"></ng-md-icon>
-            </md-button>
+        <h1 flex md-truncate>RPC</h1>
+        <!-- TODO user name -->
+        <!--<div ng-show="auth.authenticated">-->
+        <!--Logged in as: <span ng-bind="auth.user"></span>-->
+        <!--</div>-->
 
-            <!-- TODO user name -->
-            <!--<div ng-show="auth.authenticated">-->
-                <!--Logged in as: <span ng-bind="auth.user"></span>-->
-            <!--</div>-->
+        <!-- login -->
+        <md-button class="md-icon-button"
+                   ng-click="auth.login()"
+                   aria-label="Login"
+                   ng-show="!auth.authenticated"
+                   title="Log in">
+            <ng-md-icon icon="login" size="24"></ng-md-icon>
+        </md-button>
 
-        </md-toolbar>
+        <!-- logout -->
+        <md-button class="md-icon-button"
+                   ng-click="auth.logout()"
+                   aria-label="Logout"
+                   ng-show="auth.authenticated"
+                   title="Log out">
+            <ng-md-icon icon="logout" size="24"></ng-md-icon>
+        </md-button>
+    </md-toolbar>
 
-        <!-- content -->
-        <md-content flex id="content" md-scroll-y>
-<!--            <div ng-view layout="column" layout-fill layout-padding
-                 ng-show="authenticated">
-            </div>-->
+    <md-content  class="md-padding"
+                ng-controller="mainCtrl as home">
+        <md-nav-bar
+                md-selected-nav-item="home.currentNavItem"
+                nav-bar-aria-label="navigation links">
+            <!--  md-nav-href="#tasks" -->
+            <md-nav-item md-nav-click="goto('taskPage')" name="taskPage">
+                Задания
+            </md-nav-item>
+            <md-nav-item md-nav-click="goto('sourcePage')" name="sourcePage">
+                Источник
+            </md-nav-item>
+            <md-nav-item md-nav-click="goto('configPage')" name="configPage">
+                Настройки
+            </md-nav-item>
+        </md-nav-bar>
+
+        <md-content class="ext-content"
+                    flex md-scroll-y
+                    role="main">
+            <md-card flex flex-gt-sm="90">
+                <md-card-content>
+                    <h2 ng-bind="home.currentNavItem"></h2>
+                External ..
+                </md-card-content>
+            </md-card>
         </md-content>
-    </div>
+    </md-content>
 
 </md-content>
 
@@ -89,6 +116,7 @@
 
 <script type="text/javascript" charset="utf-8" src="./app/app.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/auth.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/navigation.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/pages/main.js"></script>
 
 </body>
