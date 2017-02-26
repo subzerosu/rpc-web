@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import cane.brothers.rpc.exception.DefaultExceptionAttributes;
 import cane.brothers.rpc.exception.ExceptionAttributes;
 
-public class BaseController {
+public abstract class BaseController {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
