@@ -88,6 +88,11 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+        </dependency>
+
         <!-- provided DataSource for quartz -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
