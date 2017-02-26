@@ -19,7 +19,7 @@ import cane.brothers.rpc.service.fc.RpcBatch;
 import cane.brothers.rpc.service.sheets.RpcSheets;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/rpc")
 public class GoogleController extends BaseController {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
