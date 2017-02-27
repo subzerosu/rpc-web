@@ -1,3 +1,6 @@
 {
-  "directory": "src/main/resources/static/assets/"
+  "directory": "src/main/resources/static/assets/",
+  "proxy": "http://vrnsrv-proxy:3128",
+  "https-proxy":"http://vrnsrv-proxy:3128",
+  "no-proxy":"localhost"
 }
