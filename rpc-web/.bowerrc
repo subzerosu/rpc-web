@@ -1,6 +1,3 @@
 {
-  "directory": "src/main/resources/static/assets/",
-  "proxy": "server:3128",
-  "https-proxy":"server:3128",
-  "no-proxy":"localhost"
+  "directory": "src/main/resources/static/assets/"
 }
