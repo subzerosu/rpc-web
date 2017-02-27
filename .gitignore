@@ -7,4 +7,4 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-/src/main/resources/static/assets/**
+rpc-web/src/main/resources/static/assets/**
