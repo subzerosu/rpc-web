@@ -23,7 +23,7 @@ public class OAuth2SsoSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/**")
                 .authorizeRequests()
-                .antMatchers("/", "/login**", "/assets/**")
+                .antMatchers("/", "/login**", "/assets/**", "/app/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
