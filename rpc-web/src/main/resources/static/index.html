@@ -63,18 +63,35 @@
 
     <md-content  class="md-padding"
                 ng-controller="mainCtrl as home">
+                
         <md-nav-bar
-                md-selected-nav-item="home.currentNavItem"
+                md-selected-nav-item="currentNavItem"
                 nav-bar-aria-label="navigation links">
+            
             <!--  md-nav-href="#tasks" -->
-            <md-nav-item md-nav-click="goto('taskPage')" name="taskPage">
-                Задания
+            <md-nav-item md-nav-click="gotoNav(home.navItems[0])" 
+            	 name="{{home.navItems[0].name}}"
+            	 aria-label="{{home.navItems[0].name}}">{{home.navItems[0].label}}
             </md-nav-item>
-            <md-nav-item md-nav-click="goto('sourcePage')" name="sourcePage">
-                Источник
+            
+<!--             <md-nav-item ng-repeat="nav in home.navItems track by $index" 
+            	 md-nav-click="goto('nav.name')" 
+            	 name="nav.name"
+            	 ng-bind="name.label">
+            </md-nav-item> -->
+
+            <md-nav-item md-nav-click="gotoNav(home.navItems[1])" 
+            	 name="{{home.navItems[1].name}}"
+            	 aria-label="{{home.navItems[1].name}}">{{home.navItems[1].label}}
             </md-nav-item>
-            <md-nav-item md-nav-click="goto('configPage')" name="configPage">
-                Настройки
+            
+           <md-nav-item md-nav-click="goto('configPage')" 
+            	 name="configPage">Настройки
+            </md-nav-item>
+                                    
+           <md-nav-item md-nav-click="goto('sourcePage')" 
+            	 name="sourcePage">
+            	 Источник
             </md-nav-item>
         </md-nav-bar>
 
@@ -83,7 +100,7 @@
                     role="main">
             <md-card flex flex-gt-sm="90">
                 <md-card-content>
-                    <h2 ng-bind="home.currentNavItem"></h2>
+                    <h2>{{currentNavLabel}}</h2>
                 External ..
                 </md-card-content>
             </md-card>
