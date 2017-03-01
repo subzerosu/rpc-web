@@ -1,7 +1,8 @@
 (function () {
     'use strict';
 
-    var app = angular.module('rpcApp', ['ngMaterial', 'ngMessages', 'ngMdIcons', 'ngRoute']);
+    //'ngTouch', 'ngAnimate', 'ngSanitize'
+    var app = angular.module('rpcApp', ['ui.bootstrap']);
     app.config(['$httpProvider', '$locationProvider', '$logProvider',
         function ($httpProvider, $locationProvider, $logProvider) {
             // #

@@ -1,140 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <base href="/"/>
+<base href="/" />
+<meta name="description" content="rpc app" />
+<title>rpc</title>
 
-    <meta name="description" content="rpc app"/>
-
-    <link rel="stylesheet"
-          href="./assets/angular-material/angular-material.css">
-    <link rel="stylesheet"
-          href="./assets/angular-material-icons/angular-material-icons.css">
-    <style type="text/css">
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], .ng-cloak {
-            display: none !important;
-        }
-    </style>
-
-    <title>rpc</title>
+<link rel='stylesheet'
+	href='/webjars/bootstrap/3.3.7/dist/css/bootstrap.css' />
+	
+<link rel='stylesheet' href='/webjars/angularjs/1.6.2/angular-csp.css' />
 </head>
 
-<body ng-app="rpcApp" ng-cloak>
+<body ng-app="rpcApp" class="ng-cloak">
 
-<md-content layout-fill layout="column"
-            ng-controller="authCtrl as auth">
+	<div class="container">
+		<div class="jumbotron">
+			<h1>RPC</h1>
+			<h2>Hello!!!</h2>
+		</div>
+	</div>
 
-    <!-- content -->
-    <md-toolbar layout="row" class="md-toolbar-tools">
+	<script charset="utf-8" type="text/javascript"
+		src="/webjars/angularjs/1.6.2/angular.min.js"></script>
 
-        <md-button class="md-icon-button"
-                   aria-label="Icon"
-                   title="RPC">
-            <ng-md-icon icon="apps" size="24"></ng-md-icon>
-        </md-button>
+	<script charset="utf-8" type="text/javascript"
+		src="/webjars/angularjs/1.6.2/angular.min.js"></script>
 
-        <h1 flex md-truncate>RPC</h1>
-        <!-- TODO user name -->
-        <!--<div ng-show="auth.authenticated">-->
-        <!--Logged in as: <span ng-bind="auth.user"></span>-->
-        <!--</div>-->
-
-        <!-- login -->
-        <md-button class="md-icon-button"
-                   ng-click="auth.login()"
-                   aria-label="Login"
-                   ng-show="!auth.authenticated"
-                   title="Log in">
-            <ng-md-icon icon="login" size="24"></ng-md-icon>
-        </md-button>
-
-        <!-- logout -->
-        <md-button class="md-icon-button"
-                   ng-click="auth.logout()"
-                   aria-label="Logout"
-                   ng-show="auth.authenticated"
-                   title="Log out">
-            <ng-md-icon icon="logout" size="24"></ng-md-icon>
-        </md-button>
-    </md-toolbar>
-
-    <md-content  class="md-padding"
-                ng-controller="mainCtrl as home">
-                
-        <md-nav-bar
-                md-selected-nav-item="currentNavItem"
-                nav-bar-aria-label="navigation links">
-            
-            <!--  md-nav-href="#tasks" -->
-            <md-nav-item md-nav-click="gotoNav(home.navItems[0])" 
-            	 name="{{home.navItems[0].name}}"
-            	 aria-label="{{home.navItems[0].name}}">{{home.navItems[0].label}}
-            </md-nav-item>
-            
-<!--             <md-nav-item ng-repeat="nav in home.navItems track by $index" 
-            	 md-nav-click="goto('nav.name')" 
-            	 name="nav.name"
-            	 ng-bind="name.label">
-            </md-nav-item> -->
-
-            <md-nav-item md-nav-click="gotoNav(home.navItems[1])" 
-            	 name="{{home.navItems[1].name}}"
-            	 aria-label="{{home.navItems[1].name}}">{{home.navItems[1].label}}
-            </md-nav-item>
-            
-           <md-nav-item md-nav-click="goto('configPage')" 
-            	 name="configPage">Настройки
-            </md-nav-item>
-                                    
-           <md-nav-item md-nav-click="goto('sourcePage')" 
-            	 name="sourcePage">
-            	 Источник
-            </md-nav-item>
-        </md-nav-bar>
-
-        <md-content class="ext-content"
-                    flex md-scroll-y
-                    role="main">
-            <md-card flex flex-gt-sm="90">
-                <md-card-content>
-                    <h2>{{currentNavLabel}}</h2>
-                External ..
-                </md-card-content>
-            </md-card>
-        </md-content>
-    </md-content>
-
-</md-content>
-
-<script type="text/javascript" src="./assets/jquery/dist/jquery.js"></script>
-
-<!-- Angular Material requires Angular.js Libraries -->
-<script type="text/javascript" src="./assets/angular/angular.js"></script>
-<script type="text/javascript"
-        src="./assets/angular-animate/angular-animate.js"></script>
-<script type="text/javascript"
-        src="./assets/angular-aria/angular-aria.js"></script>
-<script type="text/javascript"
-        src="./assets/angular-messages/angular-messages.js"></script>
-
-<!-- Angular Material Library -->
-<script type="text/javascript"
-        src="./assets/angular-material/angular-material.js"></script>
-
-<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script> -->
-<script type="text/javascript"
-        src="./assets/angular-material-icons/angular-material-icons.js"></script>
-
-<script type="text/javascript"
-        src="./assets/angular-route/angular-route.js"></script>
-
-<script type="text/javascript" charset="utf-8" src="./app/app.js"></script>
-<script type="text/javascript" charset="utf-8" src="./app/auth.js"></script>
-<script type="text/javascript" charset="utf-8" src="./app/navigation.js"></script>
-<script type="text/javascript" charset="utf-8" src="./app/pages/main.js"></script>
-
+	<script charset="utf-8" type="text/javascript" src="./app/app.js"></script>
 </body>
 </html>

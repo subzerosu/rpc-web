@@ -26,7 +26,7 @@
 			name : 'configPage'
 		}];
 
-		self.currentNavItem = 'taskPage';
+		$scope.currentNavItem = 'taskPage';
 		$scope.currentNavLabel = 'Задания';
 		
 		$scope.$watch('currentNavItem', function(it) {

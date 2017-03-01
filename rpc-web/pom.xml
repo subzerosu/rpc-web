@@ -1,173 +1,216 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>cane.brothers</groupId>
-    <artifactId>rpc-web</artifactId>
-    <version>0.2.2</version>
+	<groupId>cane.brothers</groupId>
+	<artifactId>rpc-web</artifactId>
+	<version>0.2.2</version>
 
-    <name>rpc-web</name>
-    <description>rpc web app</description>
+	<name>rpc-web</name>
+	<description>rpc web app</description>
 
-    <organization>
-        <name>Cane Brothers</name>
-    </organization>
+	<organization>
+		<name>Cane Brothers</name>
+	</organization>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
 
-        <google.oauth.client.version>1.22.0</google.oauth.client.version>
-        <google.sheets.version>v4-rev38-1.22.0</google.sheets.version>
-        <google.oauth2.version>v2-rev124-1.22.0</google.oauth2.version>
-        <quartz.version>2.2.1</quartz.version>
-    </properties>
+		<google.oauth.client.version>1.22.0</google.oauth.client.version>
+		<google.sheets.version>v4-rev38-1.22.0</google.sheets.version>
+		<google.oauth2.version>v2-rev124-1.22.0</google.oauth2.version>
+		<quartz.version>2.2.1</quartz.version>
+	</properties>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.1.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.1.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<addResources>true</addResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <addResources>true</addResources>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<dependencies>
 
-    <dependencies>
+		<!-- russian post -->
+		<dependency>
+			<groupId>cane.brothers</groupId>
+			<artifactId>rp-batch-wsdl</artifactId>
+			<version>1.0</version>
+		</dependency>
 
-        <!-- russian post -->
-        <dependency>
-            <groupId>cane.brothers</groupId>
-            <artifactId>rp-batch-wsdl</artifactId>
-            <version>1.0</version>
-        </dependency>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-        </dependency>
+		<!-- Spring Boot Dev Tools -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 
-        <!-- Spring Boot Dev Tools -->
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-devtools</artifactId> -->
-<!--             <optional>true</optional> -->
-<!--         </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.boot</groupId> -->
+		<!-- <artifactId>spring-boot-actuator</artifactId> -->
+		<!-- </dependency> -->
 
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-actuator</artifactId> -->
-<!--         </dependency> -->
+		<!-- provided DataSource for quartz -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
 
-        <!-- provided DataSource for quartz -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
+		<!-- QuartzJobBean in spring-context-support.jar -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
 
-        <!-- QuartzJobBean in spring-context-support.jar -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
+		<!-- H2 db -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
 
-        <!-- H2 db -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
+		<!-- google -->
 
-        <!-- google -->
+		<!-- Java 6 (and higher) extensions to the Google OAuth Client Library 
+			for Java (google-oauth-client-java6) support Java6+ applications. -->
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-java6</artifactId>
+			<version>${google.oauth.client.version}</version>
+		</dependency>
 
-        <!-- Java 6 (and higher) extensions to the Google OAuth Client Library
-            for Java (google-oauth-client-java6) support Java6+ applications. -->
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-java6</artifactId>
-            <version>${google.oauth.client.version}</version>
-        </dependency>
+		<!-- Google OAuth2 API V2 Rev124 1.22.0 -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-oauth2</artifactId>
+			<version>${google.oauth2.version}</version>
+		</dependency>
 
-        <!-- Google OAuth2 API V2 Rev124 1.22.0 -->
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-oauth2</artifactId>
-            <version>${google.oauth2.version}</version>
-        </dependency>
+		<!-- Google Sheets API V4 Rev38 1.22.0 -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-sheets</artifactId>
+			<version>${google.sheets.version}</version>
+		</dependency>
 
-        <!-- Google Sheets API V4 Rev38 1.22.0 -->
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-sheets</artifactId>
-            <version>${google.sheets.version}</version>
-        </dependency>
+		<!-- Quartz -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
 
-        <!-- Quartz -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/ro.isdc.wro4j/wro4j-maven-plugin -->
+		<!-- <dependency> -->
+		<!-- <groupId>ro.isdc.wro4j</groupId> -->
+		<!-- <artifactId>wro4j-maven-plugin</artifactId> -->
+		<!-- <version>1.8.0</version> -->
+		<!-- </dependency> -->
 
-        <!-- Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+		<!--WebJars -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator</artifactId>
+			<version>0.32</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
 
-    <repositories>
-        <repository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-    </repositories>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.webjars.bower</groupId> -->
+<!-- 			<artifactId>jquery</artifactId> -->
+<!-- 			<version>3.1.1</version> -->
+<!-- 		</dependency> -->
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-    </pluginRepositories>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angularjs</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.3.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-ui-bootstrap</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>angular-route</artifactId>
+		    <version>1.6.2</version>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
