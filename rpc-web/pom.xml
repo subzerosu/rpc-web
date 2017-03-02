@@ -189,6 +189,18 @@
 		    <artifactId>angular-route</artifactId>
 		    <version>1.6.2</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>angular-ui-router</artifactId>
+		    <version>0.4.2</version>
+		</dependency>		
+			
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>angular-breadcrumb</artifactId>
+		    <version>0.5.0</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>

@@ -1,20 +1,29 @@
-(function () {
+(function(angular) {
     'use strict';
 
-    //'ngTouch', 'ngAnimate', 'ngSanitize'
-    var app = angular.module('rpcApp', ['ui.bootstrap']);
-    app.config(['$httpProvider', '$locationProvider', '$logProvider',
-        function ($httpProvider, $locationProvider, $logProvider) {
-            // #
-            $locationProvider.hashPrefix('!');
+    // 'ngTouch', 'ngAnimate', 'ngSanitize', 'ui.bootstrap'
+    var app = angular.module('rpcApp', [ 'ui.router', 'ncy-angular-breadcrumb' ]);
+    app.config(rpcConfig);
+    app.run(rpcRun);
 
-            //$locationProvider.html5Mode(true);
+    // config
+    rpcConfig.$inject = ['$httpProvider', '$locationProvider', '$logProvider'];
+    function rpcConfig($httpProvider, $locationProvider, $logProvider) {
+        // #
+        $locationProvider.hashPrefix('!');
+        // angular csrf
+        $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+    };
 
-            // angular csrf
-            $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+    // run
+    rpcRun.$inject = ['$rootScope', '$state', '$stateParams'];
+    function rpcRun($rootScope, $state, $stateParams) {
+        $rootScope.$on('$stateChangeSuccess', function() {
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
+        });
+        
+        $rootScope.$state = $state;
+        return $rootScope.$stateParams = $stateParams;
+    };
 
-            // allow debug
-            //$logProvider.debugEnabled(true);
-        }]);
-
-})();
+})(angular);
