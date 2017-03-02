@@ -11,25 +11,33 @@
 
 <link rel='stylesheet'
 	href='/webjars/bootstrap/3.3.7/dist/css/bootstrap.css' />
-	
+
 <link rel='stylesheet' href='/webjars/angularjs/1.6.2/angular-csp.css' />
+<style type="text/css">
+body {
+	min-height: 1200px;
+	padding-top: 70px;
+}
+</style>
 </head>
 
 <body ng-app="rpcApp" class="ng-cloak">
 
-	<div class="container">
-		<div class="jumbotron">
-			<h1>RPC</h1>
-			<h2>Hello!!!</h2>
-		</div>
-	</div>
+    <ui-view></ui-view>
 
+	<!-- angular js -->
 	<script charset="utf-8" type="text/javascript"
 		src="/webjars/angularjs/1.6.2/angular.min.js"></script>
 
+	<!-- angular ui router -->
 	<script charset="utf-8" type="text/javascript"
-		src="/webjars/angularjs/1.6.2/angular.min.js"></script>
+		src="/webjars/angular-ui-router/0.4.2/release/angular-ui-router.min.js"></script>	
+	
+	<!-- angular breadcrumb -->
+	<script charset="utf-8" type="text/javascript"
+		src="/webjars/angular-breadcrumb/0.5.0/release/angular-breadcrumb.min.js"></script>	
 
 	<script charset="utf-8" type="text/javascript" src="./app/app.js"></script>
+	<script charset="utf-8" type="text/javascript" src="./app/routes.js"></script>
 </body>
 </html>
