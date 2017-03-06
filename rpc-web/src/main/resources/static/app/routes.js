@@ -1,33 +1,45 @@
-angular
-.module('rpcApp')
-.config(['$stateProvider', '$urlRouterProvider', '$breadcrumbProvider', function($stateProvider, $urlRouterProvider, $breadcrumbProvider) {
+(function(angular) {
+	'use strict';
 
-  $urlRouterProvider.otherwise('/');
+	// routing
+	angular.module('rpcApp').config(routerConfig);
 
-  $breadcrumbProvider.setOptions({
-    prefixStateName: 'app.main',
-    includeAbstract: true,
-    template: '<li class="breadcrumb-item" ng-repeat="step in steps" ng-class="{active: $last}" ng-switch="$last || !!step.abstract"><a ng-switch-when="false" href="{{step.ncyBreadcrumbLink}}">{{step.ncyBreadcrumbLabel}}</a><span ng-switch-when="true">{{step.ncyBreadcrumbLabel}}</span></li>'
-  });
+	routerConfig.$inject = [ '$stateProvider', '$urlRouterProvider',
+			'$breadcrumbProvider' ];
+	function routerConfig($stateProvider, $urlRouterProvider,
+			$breadcrumbProvider) {
 
-  $stateProvider
-  .state('app', {
-    abstract: true,
-    templateUrl: 'app/layouts/layout.html',
-    //page title goes here
-    ncyBreadcrumb: {
-      label: 'Root',
-      skip: true
-    }
-  })
-  .state('app.main', {
-    url: '/dashboard',
-    templateUrl: 'app/pages/main.html',
-    //page title goes here
-    ncyBreadcrumb: {
-      label: 'Home',
-    },
-    //page subtitle goes here
-    params: { subtitle: 'Welcome' }
-  });
-}]);
+		$breadcrumbProvider
+				.setOptions({
+					prefixStateName : 'app',
+					includeAbstract : true,
+					template : '<li class="breadcrumb-item" ng-repeat="step in steps" ng-class="{active: $last}" ng-switch="$last || !!step.abstract"><a ng-switch-when="false" href="{{step.ncyBreadcrumbLink}}">{{step.ncyBreadcrumbLabel}}</a><span ng-switch-when="true">{{step.ncyBreadcrumbLabel}}</span></li>'
+				});
+
+		// default state
+		$urlRouterProvider.otherwise('/dashboard');
+
+		var states = [ {
+			name : 'app',
+			abstract : true,
+			templateUrl : 'app/layout/layout.html',
+			ncyBreadcrumb : {
+				label : 'Root',
+				skip : true
+			}
+		}, {
+			name : 'app.dashboard',
+			url : '/dashboard',
+			component : 'dashboard',
+			ncyBreadcrumb : {
+				label : 'Dashboard',
+			}
+		} ];
+
+		states.forEach(function(state) {
+			$stateProvider.state(state);
+		});
+	}
+	;
+
+})(angular);
