@@ -32,7 +32,7 @@
 			url : '/dashboard',
 			component : 'dashboard',
 			ncyBreadcrumb : {
-				label : 'Dashboard',
+				label : 'Главная',
 			}
 		} ];
 
