@@ -3,23 +3,21 @@
 	<!-- Navbar -->
 	<div ng-include="'app/layout/navbar.html'"></div>
 
-		<!-- Navigation -->
-		<!-- <div ng-include="'app/layout/sidebar.html'"></div>  -->
+	<!-- Navigation -->
+	<!-- <div ng-include="'app/layout/sidebar.html'"></div>  -->
 
-		<!-- Main content -->
-		<main> <!-- Breadcrumb -->
-			<ol class="breadcrumb" breadcrumb>
-				<ncy-breadcrumb></ncy-breadcrumb>
-			</ol>
+	<!-- Main content -->
+	<main> 
+		<!-- Breadcrumb -->
+		<ol class="breadcrumb" breadcrumb>
+			<ncy-breadcrumb></ncy-breadcrumb>
+		</ol>
 	
-			<section class="main">
-				<ui-view></ui-view>
-			</section><!-- /.conainer-fluid -->
-		</main>
-
-	<!-- Footer -->
-	<footer ng-include="'app/layout/footer.html'">
-	    
-	</footer>
-
+		<section class="main">
+			<ui-view></ui-view>
+		</section>
+	</main>
 </div>
+
+<!-- Footer -->
+<footer ng-include="'app/layout/footer.html'"> </footer>

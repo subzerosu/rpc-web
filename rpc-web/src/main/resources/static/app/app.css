@@ -1,35 +1,39 @@
 html {
-  position: relative;
-  min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 
 body {
 	/* min-height: 200px; */
-	/* padding for navbar */ 
+	/* padding for navbar */
 	padding-top: 70px;
 	/* Margin bottom by footer height */
-  	margin-bottom: 60px;
+	margin-bottom: 60px;
 }
 
 .main {
 	padding: 30px;
-    border-radius: 6px;
-    border: 1px solid #eee;
+	border-radius: 6px;
+	border: 1px solid #eee;
 	min-height: 600px;
 }
 
 footer {
-  position: absolute;
-  bottom: 0;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  /* background-color: #f5f5f5; */
+	position: absolute;
+	bottom: 0;
+	/* fixed height of the footer */
+	height: 60px;
+	width: 100%;
 }
 
-
-footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
-  text-align: center;
+footer>.container {
+	
 }
 
+footer>.container>p {
+	text-align: center;
+	/* line-height: 60px; */
+	margin: 0;
+	text-align: center;
+	vertical-align: middle;
+}
