@@ -1,6 +1,6 @@
-<md-card flex-gt-sm="90" flex-gt-md="80">
-    <md-card-content ng-controller="taskCtrl as task">
-        <h2>задания</h2>
+<h3>Задание №{{$ctrl.task.id}}</h3>
 
-    </md-card-content>
-</md-card>
+<div>Name: {{$ctrl.task.name}}</div>
+<div>Id: {{$ctrl.task.id}}</div>
+<div>description: {{$ctrl.task.description}}</div>
+<button ui-sref="app.tasks">Close</button>
