@@ -35,7 +35,7 @@
         }, {
             name : 'app.tasks',
             url : '/tasks',
-            component : 'tasks',
+            component : 'taskList',
             resolve : {
                 tasks : function(TaskService) {
                     return TaskService.getAllTasks();
@@ -49,13 +49,14 @@
             url : '/tasks/{taskId}',
             component : 'task',
             resolve : {
-                task: function(TaskService, $transition$, $stateParams) {
-                    return TaskService.getTask($transition$.params().taskId);
+            	// $transition$.params(), 
+                task: function(TaskService, $stateParams) {
+                    return TaskService.getTask($stateParams.taskId);
                 }
             },
             ncyBreadcrumb : {
                 parent: 'app.tasks',
-                label : 'Задание № {{task.id}}',
+                label : '{{$stateParams.taskId}}'
             }
         } ];
 
