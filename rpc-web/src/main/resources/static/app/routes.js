@@ -49,7 +49,7 @@
             url : '/tasks/{taskId}',
             component : 'task',
             resolve : {
-            	// $transition$.params(), 
+            	// $transition$.params() may use instead of $stateParams
                 task: function(TaskService, $stateParams) {
                     return TaskService.getTask($stateParams.taskId);
                 }
