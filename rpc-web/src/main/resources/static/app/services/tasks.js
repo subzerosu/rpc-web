@@ -2,7 +2,7 @@
     'use strict';
 
     // service
-    angular.module('rpcApp').service('TaskService', function($http) {
+    angular.module('rpcApp').service('TaskService', ['$http', function($http) {
         var service = {
             getAllTasks: function() {
                 return $http.get('app/data/tasks.json', {
@@ -25,6 +25,6 @@
             }
         };
         return service;
-    });
+    }]);
 
 })(angular);
