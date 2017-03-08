@@ -1,11 +1,11 @@
 (function (angular) {
     'use strict';
 
-    angular.module('rpcApp').component('tasks', {
+    angular.module('rpcApp').component('taskList', {
         bindings: {
             tasks: '<'
         },
-        templateUrl: 'app/pages/tasks.html'
+        templateUrl: 'app/pages/taskList.html'
     });
 
 })(angular);
