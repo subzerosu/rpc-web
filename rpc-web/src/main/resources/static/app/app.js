@@ -6,9 +6,9 @@
     app.config(rpcConfig);
     app.run(rpcRun);
 
-    // config
-    rpcConfig.$inject = ['$httpProvider', '$locationProvider', '$logProvider'];
-    function rpcConfig($httpProvider, $locationProvider, $logProvider) {
+    // config, $logProvider
+    rpcConfig.$inject = ['$httpProvider', '$locationProvider'];
+    function rpcConfig($httpProvider, $locationProvider) {
         // #
         $locationProvider.hashPrefix('!');
         // angular csrf
