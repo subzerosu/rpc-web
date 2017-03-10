@@ -32,38 +32,11 @@
             ncyBreadcrumb : {
                 label : 'Главная',
             }
-        }, {
-            name : 'app.tasks',
-            url : '/tasks',
-            component : 'taskList',
-            resolve : {
-                tasks : function(TaskService) {
-                    return TaskService.getAllTasks();
-                }
-            },
-            ncyBreadcrumb : {
-                label : 'Задания',
-            }
-        }, {
-            name : 'app.task',
-            url : '/tasks/{taskId}',
-            component : 'task',
-            resolve : {
-            	// $transition$.params() may use instead of $stateParams
-                task: function(TaskService, $stateParams) {
-                    return TaskService.getTask($stateParams.taskId);
-                }
-            },
-            ncyBreadcrumb : {
-                parent: 'app.tasks',
-                label : '{{$stateParams.taskId}}'
-            }
-        } ];
+        }];
 
         states.forEach(function(state) {
             $stateProvider.state(state);
         });
-    }
-    ;
+    };
 
 })(angular);
