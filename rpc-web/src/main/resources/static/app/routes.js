@@ -35,7 +35,7 @@
         }, {
             name : 'app.tasks',
             url : '/tasks',
-            component : 'taskList',
+            component : 'task.list',
             resolve : {
                 tasks : function(TaskService) {
                     return TaskService.getAllTasks();
@@ -46,24 +46,23 @@
             }
         }, {
             name : 'app.task',
-            url : '/tasks/{taskId}',
-            component : 'task',
+            url : '/tasks/{taskId:[0-9]{1,4}}',
+            component : 'task.detail',
             resolve : {
-            	// $transition$.params() may use instead of $stateParams
-                task: function(TaskService, $stateParams) {
+                // $transition$.params() may use instead of $stateParams
+                task : function(TaskService, $stateParams) {
                     return TaskService.getTask($stateParams.taskId);
                 }
             },
             ncyBreadcrumb : {
-                parent: 'app.tasks',
+                parent : 'app.tasks',
                 label : '{{$stateParams.taskId}}'
             }
-        } ];
+        }];
 
         states.forEach(function(state) {
             $stateProvider.state(state);
         });
-    }
-    ;
+    };
 
 })(angular);

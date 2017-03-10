@@ -2,7 +2,7 @@
     'use strict';
 
     // 'ngTouch', 'ngAnimate', 'ngSanitize', 'ui.bootstrap'
-    var app = angular.module('rpcApp', [ 'ui.router', 'ncy-angular-breadcrumb' ]);
+    var app = angular.module('rpcApp', [ 'ui.router', 'ncy-angular-breadcrumb', 'rpcApp.tasks']);
     app.config(rpcConfig);
     app.run(rpcRun);
 
