@@ -36,11 +36,34 @@ public class RpcQuartzController {
     @Autowired
     private JobService jobService;
 
+    // @GetMapping("/info")
+    // public ResponseEntity<List<SimpleQuartzDto>> getTask() throws
+    // SchedulerException, ParseException {
+    // // TODO real trigger name
+    // List<SimpleQuartzDto> taskList = new ArrayList<>();
+    // HttpStatus status = HttpStatus.OK;
+    // TriggerKey triggerKey = new TriggerKey(defaultTriggerName,
+    // RpcUtils.getGroupName());
+    // Trigger trigger = jobService.getJobTrigger(triggerKey);
+    // if (trigger instanceof SimpleTrigger) {
+    // Long repeatInterval = ((SimpleTrigger) trigger).getRepeatInterval() /
+    // 1000;
+    // taskList.add(new SimpleQuartzDto(1l, trigger.getKey().getName(),
+    // repeatInterval));
+    // }
+    // else {
+    // status = HttpStatus.NOT_FOUND;
+    // }
+    // return new ResponseEntity<List<SimpleQuartzDto>>(taskList, status);
+    // }
+
     @GetMapping("/start")
     public ResponseEntity<String> startTask() throws SchedulerException, ParseException {
         // TODO real trigger name
         TriggerKey triggerKey = new TriggerKey(defaultTriggerName, RpcUtils.getGroupName());
-        if (jobService.startJob(triggerKey, defaultTriggerInterval)) {
+
+        jobService.createJob(triggerKey, defaultTriggerInterval);
+        if (jobService.startJob(triggerKey)) {
             return new ResponseEntity<String>("job have been started.", HttpStatus.OK);
         }
         return new ResponseEntity<String>("failed to start job", HttpStatus.ACCEPTED);

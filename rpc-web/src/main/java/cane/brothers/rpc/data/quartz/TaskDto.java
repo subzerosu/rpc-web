@@ -1,13 +1,10 @@
 package cane.brothers.rpc.data.quartz;
 
-/**
- * @author cane
- *
- *         TODO number, description, DB
- */
-public class SimpleQuartzDto {
+import cane.brothers.rpc.data.TaskEntry;
 
-    private Long id;
+public class TaskDto {
+
+    private Integer id;
 
     private Long interval;
 
@@ -16,21 +13,30 @@ public class SimpleQuartzDto {
     /**
      * Default constructor
      */
-    public SimpleQuartzDto() {
+    public TaskDto() {
         super();
     }
 
-    public SimpleQuartzDto(Long id, String taskName, Long intervalInHours) {
+    public TaskDto(TaskEntry entry) {
+        this(entry.getId(), entry.getName(), entry.getInterval());
+    }
+
+    /**
+     * @param id
+     * @param taskName
+     * @param intervalInHours
+     */
+    public TaskDto(Integer id, String taskName, Long intervalInHours) {
         this.id = id;
         this.name = taskName;
         this.interval = intervalInHours;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -58,5 +64,4 @@ public class SimpleQuartzDto {
                 .append(name).append("]");
         return builder.toString();
     }
-
 }

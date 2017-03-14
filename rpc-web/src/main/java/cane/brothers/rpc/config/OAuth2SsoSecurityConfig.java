@@ -17,6 +17,11 @@ public class OAuth2SsoSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static Logger logger = LoggerFactory.getLogger(OAuth2SsoSecurityConfig.class);
 
+//    @Override
+//    public void configure(WebSecurity web) {
+//        web.ignoring().antMatchers("/console/**");
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         logger.debug("Настраиваем безопасность.");

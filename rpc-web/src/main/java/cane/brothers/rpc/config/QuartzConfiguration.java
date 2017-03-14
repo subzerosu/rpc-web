@@ -46,6 +46,7 @@ public class QuartzConfiguration {
         schedulerFactory.setJobFactory(jobFactory());
         schedulerFactory.setQuartzProperties(quartzProperties());
 
+        // set on demand
         // schedulerFactory.setTriggers(simpleTriggerFactory().getObject());
         // schedulerFactory.setJobDetails(jobDetailFactory(getTriggerGroup()).getObject());
 
