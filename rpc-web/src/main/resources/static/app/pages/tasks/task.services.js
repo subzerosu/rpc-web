@@ -5,26 +5,22 @@
     
     // task service
     .service('TaskService', ['$http', function($http) {
+        var taskUrl = 'http://localhost:5000/api/rpc/tasks';
+        var cacheOpt = { cache: true };
         var service = {
-            createTask: function(task) {
+            createTask: function() {
+                    // TODO
                     var data = {
-                        task: task
+                        name: "task",
+                        interval: 5
                     };
-                    return $http.post('http://localhost:5000/api/rpc/tasks/', 
-                            JSON.stringify(data))
-                    .then(function(resp) {
-                        console.log("task was submitted successfully!");
-                    }).catch(function(resp) {
-                        console.log("problems during task submit!");
-                    });
+                    return $http.post(taskUrl, JSON.stringify(data));
             },
                 
                 
             getAllTasks: function() {
                 // return $http.get('app/data/tasks.json', {
-                return $http.get('http://localhost:5000/api/rpc/tasks/', {
-                    cache: true
-                }).then(function(resp) {
+                return $http.get(taskUrl).then(function(resp) {
                     return resp.data;
                 }).catch(function(resp) {
                   return [];
@@ -32,13 +28,24 @@
             },
 
             getTask: function(id) {
-                function filterById(task) {
-                    return task.id == id;
-                }
-
-                return service.getAllTasks().then(function(tasks) {
-                    return tasks.find(filterById);
+                return $http.get(taskUrl + '/' + id, cacheOpt)
+                .then(function(resp) {
+                    return resp.data;
+                }).catch(function(resp) {
+                  return undefined;
                 });
+                
+//                function filterById(task) {
+//                    return task.id == id;
+//                }
+//
+//                return service.getAllTasks().then(function(tasks) {
+//                    if(angular.isArray(tasks)) {
+//                        return tasks.find(filterById);
+//                    } else {
+//                        return [];
+//                    }
+//                });
             }
         };
         return service;

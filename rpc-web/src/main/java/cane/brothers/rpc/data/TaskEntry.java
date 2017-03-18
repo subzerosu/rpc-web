@@ -15,10 +15,10 @@ public class TaskEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name = "TSK_NAME")
     private String name;
 
-    @Column
+    @Column(name = "TSK_GROUP")
     private String group;
 
     @Column

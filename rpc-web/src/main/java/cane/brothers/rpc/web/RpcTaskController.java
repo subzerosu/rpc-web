@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,11 +27,11 @@ public class RpcTaskController extends BaseController {
     private TaskService taskService;
 
     @PostMapping()
-    public ResponseEntity<TaskDto> createTask(TaskDto task) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto task) {
         HttpStatus status = HttpStatus.OK;
         TaskDto resultTask = taskService.createTask(task);
         if (resultTask == null) {
-            status = HttpStatus.NOT_ACCEPTABLE;
+            status = HttpStatus.CONFLICT;
         }
 
         return new ResponseEntity<TaskDto>(resultTask, status);
@@ -40,9 +42,25 @@ public class RpcTaskController extends BaseController {
         HttpStatus status = HttpStatus.OK;
         Set<TaskDto> tasks = taskService.getAllTasks();
         if (tasks.isEmpty()) {
-            status = HttpStatus.NOT_FOUND;
+            status = HttpStatus.NO_CONTENT;
         }
         return new ResponseEntity<Set<TaskDto>>(tasks, status);
+    }
+
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskDto> getTask(@PathVariable Integer taskId) {
+        HttpStatus status = HttpStatus.OK;
+        TaskDto task = null;
+        if (taskId <= 0) {
+            status = HttpStatus.BAD_REQUEST;
+        }
+        else {
+            task = taskService.getTask(taskId);
+            if (task == null) {
+                status = HttpStatus.NO_CONTENT;
+            }
+        }
+        return new ResponseEntity<TaskDto>(task, status);
     }
 
 }

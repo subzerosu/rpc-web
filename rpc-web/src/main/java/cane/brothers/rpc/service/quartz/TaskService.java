@@ -9,4 +9,6 @@ public interface TaskService {
     TaskDto createTask(TaskDto task);
 
     Set<TaskDto> getAllTasks();
+
+    TaskDto getTask(Integer taskId);
 }

@@ -1,13 +1,17 @@
 package cane.brothers.rpc.data.quartz;
 
+import javax.validation.constraints.NotNull;
+
 import cane.brothers.rpc.data.TaskEntry;
 
 public class TaskDto {
 
     private Integer id;
 
+    @NotNull
     private Long interval;
 
+    @NotNull
     private String name;
 
     /**

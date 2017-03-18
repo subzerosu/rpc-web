@@ -5,12 +5,14 @@ import java.util.Set;
 
 import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import cane.brothers.rpc.RpcUtils;
 import cane.brothers.rpc.data.TaskEntry;
 import cane.brothers.rpc.data.quartz.TaskDto;
 import cane.brothers.rpc.repo.RpcTaskRepository;
 
+@Service
 public class RpcTaskService implements TaskService {
 
     // private static Map<String, Long> map = new HashMap<>();
@@ -59,6 +61,12 @@ public class RpcTaskService implements TaskService {
             taskList.add(new TaskDto(entry));
         }
         return taskList;
+    }
+
+    @Override
+    public TaskDto getTask(Integer taskId) {
+        TaskEntry entry = taskRepo.findOne(taskId);
+        return (entry == null ? null : new TaskDto(entry));
     }
 
 }
