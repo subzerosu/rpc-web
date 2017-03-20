@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +35,23 @@ public class RpcTaskController extends BaseController {
             status = HttpStatus.CONFLICT;
         }
 
+        return new ResponseEntity<TaskDto>(resultTask, status);
+    }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto task, @PathVariable Integer taskId) {
+        HttpStatus status = HttpStatus.OK;
+        // task.setId(taskId);
+        TaskDto resultTask = null;
+        if (task != null && !task.getId().equals(taskId)) {
+            status = HttpStatus.FORBIDDEN;
+        }
+        else {
+            resultTask = taskService.updateTask(task);
+            if (resultTask == null) {
+                status = HttpStatus.CONFLICT;
+            }
+        }
         return new ResponseEntity<TaskDto>(resultTask, status);
     }
 

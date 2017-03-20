@@ -32,6 +32,34 @@
                 parent : 'app.tasks',
                 label : '{{$stateParams.taskId}}'
             }
+        }, {
+            name : 'app.newtask',
+            url : '/tasks/new',
+            component : 'task.new',
+            resolve : {
+                newTask : function() {
+                    return {
+                        name: "Проверка таблицы баркодов"
+                    }
+                }
+            },
+            ncyBreadcrumb : {
+                parent : 'app.tasks',
+                label : 'Новое'
+            }
+        }, {
+            name : 'app.edittask',
+            url : '/tasks/{taskId:[0-9]{1,4}}/edit',
+            component : 'task.edit',
+            resolve : {
+                task : function(TaskService, $stateParams) {
+                    return TaskService.getTask($stateParams.taskId);
+                }
+            },
+            ncyBreadcrumb : {
+                parent : 'app.tasks',
+                label : '{{$stateParams.taskId}}'
+            }
         } ];
 
         states.forEach(function(state) {

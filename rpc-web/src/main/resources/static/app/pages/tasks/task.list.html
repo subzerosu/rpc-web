@@ -5,11 +5,11 @@
         <ul ng-show="$ctrl.tasks.length">
             <li ng-repeat="t in $ctrl.tasks">
                 <a ui-sref="app.task({ taskId: t.id })"
-                    ui-sref-active="active" >{{t.name}}</a>
+                    ui-sref-active="active">{{t.name}}</a>
             </li>
         </ul>
     </div>
     <div>
-    	<button type="button" class="btn btn-success" ng-click="$ctrl.createTask()">Создать</button>
+    	<button type="button" class="btn btn-success" ui-sref="app.newtask">Создать</button>
     </div>
 </div>

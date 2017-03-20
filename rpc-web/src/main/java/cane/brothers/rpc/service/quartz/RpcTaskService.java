@@ -69,4 +69,15 @@ public class RpcTaskService implements TaskService {
         return (entry == null ? null : new TaskDto(entry));
     }
 
+    @Override
+    public TaskDto updateTask(TaskDto task) {
+        // TODO
+        TaskEntry entry = new TaskEntry(task);
+        entry.setGroup(RpcUtils.getGroupName());
+        entry = taskRepo.saveAndFlush(entry);
+        TaskDto resultTask = new TaskDto(entry);
+
+        return resultTask;
+    }
+
 }
