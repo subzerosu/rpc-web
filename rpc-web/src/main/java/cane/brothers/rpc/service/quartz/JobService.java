@@ -13,6 +13,8 @@ public interface JobService {
 
     boolean stopJob(TriggerKey triggerKey);
 
+    boolean resetJob(TriggerKey triggerKey, Long newInterval);
+
     public Trigger getJobTrigger(TriggerKey triggerKey);
 
     // Trigger getJobTrigger(TriggerKey triggerKey);

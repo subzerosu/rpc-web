@@ -6,6 +6,7 @@ import java.util.Set;
 import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import cane.brothers.rpc.RpcUtils;
 import cane.brothers.rpc.data.TaskEntry;
@@ -33,8 +34,7 @@ public class RpcTaskService implements TaskService {
         TriggerKey triggerKey = new TriggerKey(task.getName(), RpcUtils.getGroupName());
         if (jobService.createJob(triggerKey, task.getInterval())) {
 
-            TaskEntry entry = new TaskEntry(task);
-            entry.setGroup(RpcUtils.getGroupName());
+            TaskEntry entry = new TaskEntry(task, RpcUtils.getGroupName());
             entry = taskRepo.saveAndFlush(entry);
             TaskDto resultTask = new TaskDto(entry);
 
@@ -71,11 +71,21 @@ public class RpcTaskService implements TaskService {
 
     @Override
     public TaskDto updateTask(TaskDto task) {
-        // TODO
-        TaskEntry entry = new TaskEntry(task);
-        entry.setGroup(RpcUtils.getGroupName());
-        entry = taskRepo.saveAndFlush(entry);
-        TaskDto resultTask = new TaskDto(entry);
+        Assert.notNull(task);
+        Assert.notNull(task.getId());
+
+        TaskDto resultTask = null;
+
+        // update quartz
+        TriggerKey triggerKey = new TriggerKey(task.getName(), RpcUtils.getGroupName());
+        if (jobService.resetJob(triggerKey, task.getInterval())) {
+
+            // update in db
+            TaskEntry entry = taskRepo.findOne(task.getId());
+            entry.setInterval(task.getInterval());
+            entry = taskRepo.saveAndFlush(entry);
+            resultTask = new TaskDto(entry);
+        }
 
         return resultTask;
     }

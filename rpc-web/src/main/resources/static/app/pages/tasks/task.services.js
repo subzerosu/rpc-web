@@ -6,7 +6,7 @@
     // task service
     .service('TaskService', ['$http', '$state', function($http, $state) {
         var taskUrl = 'http://localhost:5000/api/rpc/tasks';
-        var cacheOpt = { cache: true };
+        var cacheOpt = { cache: false };
         
         var service = {
             // new task

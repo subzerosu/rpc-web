@@ -8,5 +8,7 @@ import cane.brothers.rpc.data.TaskEntry;
 
 public interface RpcTaskRepository extends JpaRepository<TaskEntry, Integer> {
 
+    Set<TaskEntry> findByName(String name);
+
     Set<TaskEntry> findByGroup(String groupName);
 }

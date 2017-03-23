@@ -6,21 +6,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import cane.brothers.rpc.data.quartz.TaskDto;
 
-@Table(name = "RPC_TASKS")
 @Entity
+@Table(name = "RPC_TASKS", uniqueConstraints = @UniqueConstraint(columnNames = { "TSK_NAME", "TSK_GROUP" }))
 public class TaskEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "TSK_NAME", updatable = false, insertable = true, nullable = false)
+    @Column(name = "TSK_NAME", updatable = false, nullable = false)
     private String name;
 
-    @Column(name = "TSK_GROUP", updatable = false, insertable = true, nullable = false)
+    @Column(name = "TSK_GROUP", updatable = false, nullable = false, length = 1024)
     private String group;
 
     @Column
@@ -41,8 +42,10 @@ public class TaskEntry {
      *
      * @param task
      */
-    public TaskEntry(TaskDto task) {
+    public TaskEntry(TaskDto task, String group) {
+        this.id = task.getId();
         this.name = task.getName();
+        this.group = group;
         this.interval = task.getInterval();
     }
 

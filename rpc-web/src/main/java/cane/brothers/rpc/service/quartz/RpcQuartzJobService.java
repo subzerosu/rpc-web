@@ -146,6 +146,28 @@ public class RpcQuartzJobService implements JobService {
         return false;
     }
 
+    @Override
+    public boolean resetJob(TriggerKey triggerKey, Long newInterval) {
+        JobDetail jobDetail = getOrCreateJobDetail();
+        Trigger newTrigger = getOrCreateTrigger(triggerKey, newInterval, jobDetail);
+
+        try {
+            if (checkJobExistence(jobDetail)) {
+                // нельзя назначить работу с одним и тем же триггером дважды
+                schedulerFactory.getScheduler().scheduleJob(jobDetail, newTrigger);
+            }
+            else {
+                // перезапускаем работу с новым триггером
+                schedulerFactory.getScheduler().rescheduleJob(triggerKey, newTrigger);
+            }
+            return true;
+        }
+        catch (SchedulerException ex) {
+            logger.error("Cannot start reschedule job", ex);
+        }
+        return false;
+    }
+
     private boolean checkJobExistence(JobDetail jobDetail) throws SchedulerException {
         return jobDetail != null && !schedulerFactory.getScheduler().checkExists(jobDetail.getKey());
     }
@@ -154,6 +176,7 @@ public class RpcQuartzJobService implements JobService {
     public boolean stopJob(TriggerKey triggerKey) {
         try {
             if (schedulerFactory.getScheduler().checkExists(triggerKey)) {
+                schedulerFactory.getScheduler().unscheduleJob(triggerKey);
                 schedulerFactory.getScheduler().unscheduleJob(triggerKey);
                 return true;
             }
