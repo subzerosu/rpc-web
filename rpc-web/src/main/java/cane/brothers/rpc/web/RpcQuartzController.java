@@ -63,7 +63,7 @@ public class RpcQuartzController {
         TriggerKey triggerKey = new TriggerKey(defaultTriggerName, RpcUtils.getGroupName());
 
         jobService.createJob(triggerKey, defaultTriggerInterval);
-        if (jobService.startJob(triggerKey)) {
+        if (jobService.startJob(triggerKey, defaultTriggerInterval)) {
             return new ResponseEntity<String>("job have been started.", HttpStatus.OK);
         }
         return new ResponseEntity<String>("failed to start job", HttpStatus.ACCEPTED);

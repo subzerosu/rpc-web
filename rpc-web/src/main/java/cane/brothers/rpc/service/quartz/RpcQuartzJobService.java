@@ -1,11 +1,14 @@
 package cane.brothers.rpc.service.quartz;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import org.springframework.stereotype.Service;
 
 import cane.brothers.rpc.RpcUtils;
+import cane.brothers.rpc.data.quartz.RpcTaskOperation;
 import cane.brothers.rpc.quartz.RpcTicketJob;
 
 @Service
@@ -30,14 +34,6 @@ public class RpcQuartzJobService implements JobService {
 
     @Autowired
     private SchedulerFactoryBean schedulerFactory;
-
-    @Override
-    public boolean createJob(TriggerKey triggerKey, long repeatInterval) {
-        JobDetail jobDetail = getOrCreateJobDetail();
-        Trigger trigger = getOrCreateTrigger(triggerKey, repeatInterval,
-                jobDetail);
-        return (trigger == null ? false : true);
-    }
 
     /**
      * configure job bean
@@ -120,20 +116,46 @@ public class RpcQuartzJobService implements JobService {
     }
 
     @Override
-    public boolean startJob(TriggerKey triggerKey) {
+    public boolean createJob(TriggerKey triggerKey, long repeatInterval) {
         JobDetail jobDetail = getOrCreateJobDetail();
-        Trigger trigger = getOrCreateTrigger(triggerKey, 100500, jobDetail);
+        Trigger trigger = getOrCreateTrigger(triggerKey, repeatInterval,
+                jobDetail);
+        return (trigger == null ? false : true);
+    }
+
+    @Override
+    public boolean startJob(TriggerKey triggerKey, long newInterval) {
+        JobDetail jobDetail = getOrCreateJobDetail();
+        Trigger trigger = getOrCreateTrigger(triggerKey, newInterval, jobDetail);
+
+        // TODO check if Job already runnig
+        try {
+            List<? extends Trigger> assTriggers = schedulerFactory.getScheduler().getTriggersOfJob(jobDetail.getKey());
+            for (Trigger t : assTriggers) {
+                logger.debug(t.toString());
+            }
+
+            if (checkJobExistence(jobDetail)) {
+                // сохранить Job тригер в БД, запустить тригер для Job
+                Date d = schedulerFactory.getScheduler().scheduleJob(jobDetail, trigger);
+                if (d != null) {
+                    logger.info("Задание " + trigger + " запущено. " + d.toString());
+                }
+            }
+            // для существующей Job добавить новый тригер, сохранив его в БД
+            else {
+                Date d = schedulerFactory.getScheduler().scheduleJob(trigger);
+                if (d != null) {
+                    logger.info("Задание " + trigger + " перезапущено. " +
+                            d.toString());
+                }
+            }
+        }
+        catch (SchedulerException ex) {
+            logger.error("Cannot schedule job", ex);
+        }
 
         try {
-            if (checkJobExistence(jobDetail)) {
-                // нельзя назначить работу с одним и тем же триггером дважды
-                schedulerFactory.getScheduler().scheduleJob(jobDetail, trigger);
-            }
-            else {
-                logger.warn("Задание уже запущенно и выполняется");
-                return false;
-            }
-
             // стартуем шедулер если не запущен
             if (!schedulerFactory.getScheduler().isStarted()) {
                 schedulerFactory.getScheduler().start();
@@ -168,6 +190,12 @@ public class RpcQuartzJobService implements JobService {
         return false;
     }
 
+    /**
+     *
+     * @param jobDetail
+     * @return вернет true если есть запись о Job в БД
+     * @throws SchedulerException
+     */
     private boolean checkJobExistence(JobDetail jobDetail) throws SchedulerException {
         return jobDetail != null && !schedulerFactory.getScheduler().checkExists(jobDetail.getKey());
     }
@@ -175,13 +203,14 @@ public class RpcQuartzJobService implements JobService {
     @Override
     public boolean stopJob(TriggerKey triggerKey) {
         try {
-            if (schedulerFactory.getScheduler().checkExists(triggerKey)) {
-                schedulerFactory.getScheduler().unscheduleJob(triggerKey);
-                schedulerFactory.getScheduler().unscheduleJob(triggerKey);
+            // удаляем у Job триггер, чистим за ним в БД
+            if (schedulerFactory.getScheduler().unscheduleJob(triggerKey)) {
+                logger.error("Job {} was stoped", triggerKey);
                 return true;
             }
             else {
                 logger.error("Cannot stop {}", triggerKey);
+                return false;
             }
         }
         catch (SchedulerException ex) {
@@ -211,6 +240,29 @@ public class RpcQuartzJobService implements JobService {
             logger.error("Unable create and set trigger", ex);
         }
         return null;
+    }
+
+    @Override
+    public RpcTaskOperation getJobState(TriggerKey triggerKey) {
+        // TriggerState
+        try {
+            TriggerState state = schedulerFactory.getScheduler().getTriggerState(triggerKey);
+            logger.info("TriggerState " + state);
+
+            if (state == TriggerState.NORMAL) {
+                return RpcTaskOperation.START;
+            }
+            else if (state == TriggerState.PAUSED) {
+                return RpcTaskOperation.PAUSE;
+            }
+            else if (state == TriggerState.BLOCKED || state == TriggerState.COMPLETE) {
+                return RpcTaskOperation.STOP;
+            }
+        }
+        catch (SchedulerException ex) {
+            logger.error("Cannot fetch triggers by group name", ex);
+        }
+        return RpcTaskOperation.UNDEFINED;
     }
 
 }

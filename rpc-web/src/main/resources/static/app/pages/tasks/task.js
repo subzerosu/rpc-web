@@ -60,7 +60,26 @@
                 parent : 'app.tasks',
                 label : '{{$stateParams.taskId}}'
             }
-        } ];
+        }, {
+            name : 'app.undeftask',
+            component : 'task.undef',
+            ncyBreadcrumb : {
+                parent : 'app.tasks',
+                label : 'неопределено'
+            }
+        } 
+        
+//        ,{
+//            name : 'app.starttask',
+//            url : '/tasks/{taskId:[0-9]{1,4}}/operation',
+//            component : 'task.start',
+//            resolve : {
+//                task : function(TaskService, $stateParams) {
+//                    return TaskService.getTask($stateParams.taskId);
+//                }
+//            }
+//        }
+        ];
 
         states.forEach(function(state) {
             $stateProvider.state(state);

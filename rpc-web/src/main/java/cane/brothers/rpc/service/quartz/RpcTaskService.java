@@ -3,7 +3,6 @@ package cane.brothers.rpc.service.quartz;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -18,8 +17,8 @@ public class RpcTaskService implements TaskService {
 
     // private static Map<String, Long> map = new HashMap<>();
 
-    @Autowired
-    private JobService jobService;
+    // @Autowired
+    // private JobService jobService;
 
     @Autowired
     private RpcTaskRepository taskRepo;
@@ -31,16 +30,17 @@ public class RpcTaskService implements TaskService {
             return null;
         }
 
-        TriggerKey triggerKey = new TriggerKey(task.getName(), RpcUtils.getGroupName());
-        if (jobService.createJob(triggerKey, task.getInterval())) {
+        // TriggerKey triggerKey = new TriggerKey(task.getName(),
+        // RpcUtils.getGroupName());
+        // if (jobService.createJob(triggerKey, task.getInterval())) {
 
-            TaskEntry entry = new TaskEntry(task, RpcUtils.getGroupName());
-            entry = taskRepo.saveAndFlush(entry);
-            TaskDto resultTask = new TaskDto(entry);
+        TaskEntry entry = new TaskEntry(task, RpcUtils.getGroupName());
+        entry = taskRepo.saveAndFlush(entry);
+        TaskDto resultTask = new TaskDto(entry);
 
-            return resultTask;
-        }
-        return null;
+        return resultTask;
+        // }
+        // return null;
     }
 
     @Override
@@ -77,15 +77,16 @@ public class RpcTaskService implements TaskService {
         TaskDto resultTask = null;
 
         // update quartz
-        TriggerKey triggerKey = new TriggerKey(task.getName(), RpcUtils.getGroupName());
-        if (jobService.resetJob(triggerKey, task.getInterval())) {
+        // TriggerKey triggerKey = new TriggerKey(task.getName(),
+        // RpcUtils.getGroupName());
+        // if (jobService.resetJob(triggerKey, task.getInterval())) {
 
-            // update in db
-            TaskEntry entry = taskRepo.findOne(task.getId());
-            entry.setInterval(task.getInterval());
-            entry = taskRepo.saveAndFlush(entry);
-            resultTask = new TaskDto(entry);
-        }
+        // update in db
+        TaskEntry entry = taskRepo.findOne(task.getId());
+        entry.setInterval(task.getInterval());
+        entry = taskRepo.saveAndFlush(entry);
+        resultTask = new TaskDto(entry);
+        // }
 
         return resultTask;
     }

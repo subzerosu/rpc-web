@@ -4,7 +4,7 @@
     angular.module('rpcApp.tasks')
     
     // task service
-    .service('TaskService', ['$http', '$state', function($http, $state) {
+    .service('TaskService', ['$http', '$state', 'Notification', function($http, $state, Notification) {
         var taskUrl = 'http://localhost:5000/api/rpc/tasks';
         var cacheOpt = { cache: false };
         
@@ -46,21 +46,58 @@
             getTask: function(id) {
                 return $http.get(taskUrl + '/' + id, cacheOpt)
                 .then(function(resp) {
-                    return resp.data;
+                    if(resp.data) {
+                        return resp.data;
+                    } else {
+                        console.log("задание не найдено.")
+                        $state.go("app.undeftask");
+                    }
                 }).catch(function(resp) {
-                  return undefined;
+                    console.log("задание не найдено.")
+                    $state.go("app.undeftask");
+                  // return undefined;
                 });
                 
-//                function filterById(task) {
-//                    return task.id == id;
-//                }
-//                return service.getAllTasks().then(function(tasks) {
-//                    if(angular.isArray(tasks)) {
-//                        return tasks.find(filterById);
-//                    } else {
-//                        return [];
-//                    }
-//                });
+// function filterById(task) {
+// return task.id == id;
+// }
+// return service.getAllTasks().then(function(tasks) {
+// if(angular.isArray(tasks)) {
+// return tasks.find(filterById);
+// } else {
+// return [];
+// }
+// });
+            },
+            
+            startTask: function(task) {
+                var oper = { 
+                        operation: 'start' 
+                };
+                return $http.put(taskUrl + '/' + task.id + '/operation', JSON.stringify(oper))
+                .then(function(resp) {
+                    Notification.primary('Задача запущена!');
+                    console.log("task was started successfully!");
+                })
+                .catch(function(resp) {
+                    Notification.primary('Задачу запустить не удалось!');
+                    console.log("problems during task starting!");
+                })
+            },
+        
+            stopTask: function(task) {
+                var oper = { 
+                        operation: 'stop' 
+                };
+                return $http.put(taskUrl + '/' + task.id + '/operation', JSON.stringify(oper))
+                .then(function(resp) {
+                    Notification.primary('Задача остановлена!');
+                    console.log("task was stopped successfully!");
+                })
+                .catch(function(resp) {
+                    Notification.primary('Задачу остановить не удалось!');
+                    console.log("problems during task stoping!");
+                })
             }
         };
         return service;

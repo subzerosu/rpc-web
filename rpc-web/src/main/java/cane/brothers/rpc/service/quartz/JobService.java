@@ -5,11 +5,13 @@ import java.util.Set;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
+import cane.brothers.rpc.data.quartz.RpcTaskOperation;
+
 public interface JobService {
 
     boolean createJob(TriggerKey triggerKey, long repeatInterval);
 
-    boolean startJob(TriggerKey triggerKey);
+    boolean startJob(TriggerKey triggerKey, long newInterval);
 
     boolean stopJob(TriggerKey triggerKey);
 
@@ -19,4 +21,6 @@ public interface JobService {
 
     // Trigger getJobTrigger(TriggerKey triggerKey);
     Set<TriggerKey> getTriggersByGroup(String triggerGroup);
+
+    RpcTaskOperation getJobState(TriggerKey triggerKey);
 }

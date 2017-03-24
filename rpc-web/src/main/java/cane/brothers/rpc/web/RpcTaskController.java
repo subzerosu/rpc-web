@@ -2,6 +2,7 @@ package cane.brothers.rpc.web;
 
 import java.util.Set;
 
+import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cane.brothers.rpc.data.TaskEntry;
+import cane.brothers.rpc.data.quartz.RpcTaskOperation;
 import cane.brothers.rpc.data.quartz.TaskDto;
+import cane.brothers.rpc.data.quartz.TaskOperationDto;
+import cane.brothers.rpc.repo.RpcTaskRepository;
+import cane.brothers.rpc.service.quartz.JobService;
 import cane.brothers.rpc.service.quartz.TaskService;
 
 @RestController
@@ -27,6 +33,12 @@ public class RpcTaskController extends BaseController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private JobService jobService;
+
+    @Autowired
+    private RpcTaskRepository taskRepo;
+
     @PostMapping()
     public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto task) {
         HttpStatus status = HttpStatus.OK;
@@ -35,23 +47,6 @@ public class RpcTaskController extends BaseController {
             status = HttpStatus.CONFLICT;
         }
 
-        return new ResponseEntity<TaskDto>(resultTask, status);
-    }
-
-    @PutMapping("/{taskId}")
-    public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto task, @PathVariable Integer taskId) {
-        HttpStatus status = HttpStatus.OK;
-        // task.setId(taskId);
-        TaskDto resultTask = null;
-        if (task != null && !task.getId().equals(taskId)) {
-            status = HttpStatus.FORBIDDEN;
-        }
-        else {
-            resultTask = taskService.updateTask(task);
-            if (resultTask == null) {
-                status = HttpStatus.CONFLICT;
-            }
-        }
         return new ResponseEntity<TaskDto>(resultTask, status);
     }
 
@@ -65,6 +60,7 @@ public class RpcTaskController extends BaseController {
         return new ResponseEntity<Set<TaskDto>>(tasks, status);
     }
 
+    // TODO deny access to the foreign tasks
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDto> getTask(@PathVariable Integer taskId) {
         HttpStatus status = HttpStatus.OK;
@@ -81,4 +77,81 @@ public class RpcTaskController extends BaseController {
         return new ResponseEntity<TaskDto>(task, status);
     }
 
+    /**
+     * Fetch current task operation.
+     *
+     * @param oper
+     * @param taskId
+     * @return
+     */
+    @GetMapping("/{taskId}/operation")
+    public ResponseEntity<TaskOperationDto> getTaskOperation(@PathVariable Integer taskId) {
+        HttpStatus status = HttpStatus.OK;
+
+        RpcTaskOperation oper = RpcTaskOperation.UNDEFINED;
+        TaskEntry task = taskRepo.findOne(taskId);
+        if (task != null) {
+            TriggerKey triggerKey = new TriggerKey(task.getName(), task.getGroup());
+            oper = jobService.getJobState(triggerKey);
+        }
+
+        else {
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<TaskOperationDto>(new TaskOperationDto(oper), status);
+    }
+
+    /**
+     * Perform the operation on a task.
+     *
+     * @param oper
+     * @param taskId
+     * @return
+     */
+    @PutMapping("/{taskId}/operation")
+    public ResponseEntity<TaskOperationDto> performTaskOperation(@RequestBody TaskOperationDto oper,
+            @PathVariable Integer taskId) {
+        HttpStatus status = HttpStatus.OK;
+        RpcTaskOperation taskOper = RpcTaskOperation.UNDEFINED;
+
+        TaskEntry task = taskRepo.findOne(taskId);
+        if (task != null) {
+            TriggerKey triggerKey = new TriggerKey(task.getName(), task.getGroup());
+
+            // TODO service
+            if (oper == null) {
+                status = HttpStatus.ACCEPTED;
+            }
+
+            else if (RpcTaskOperation.START.toString().equals(oper.getOperation())) {
+                if (jobService.startJob(triggerKey, task.getInterval())) {
+                    taskOper = RpcTaskOperation.START;
+                }
+                else {
+                    taskOper = RpcTaskOperation.UNDEFINED;
+                }
+            }
+
+            else if (RpcTaskOperation.STOP.toString().equals(oper.getOperation())) {
+                if (jobService.stopJob(triggerKey)) {
+                    taskOper = RpcTaskOperation.STOP;
+                }
+                else {
+                    taskOper = RpcTaskOperation.UNDEFINED;
+                }
+            }
+
+            else if (RpcTaskOperation.PAUSE.toString().equals(oper.getOperation())) {
+                // TODO pause
+                taskOper = RpcTaskOperation.UNDEFINED;
+            }
+        }
+
+        else {
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<TaskOperationDto>(new TaskOperationDto(taskOper), status);
+    }
 }
