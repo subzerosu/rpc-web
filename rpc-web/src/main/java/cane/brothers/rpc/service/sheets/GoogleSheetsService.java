@@ -37,7 +37,9 @@ public class GoogleSheetsService implements GoogleSheets {
 	}
 
 	private List<List<Object>> readTable(Sheets service, String spreadsheetId, String sheetName) throws IOException {
-		ValueRange table = service.spreadsheets().values().get(spreadsheetId, sheetName).execute();
+		Sheets.Spreadsheets ss = service.spreadsheets();
+		Sheets.Spreadsheets.Values v = ss.values();
+		ValueRange table = v.get(spreadsheetId, sheetName).execute();
 
 		List<List<Object>> values = table.getValues();
 		printTable(values);
