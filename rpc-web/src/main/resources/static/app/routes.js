@@ -11,7 +11,7 @@
                 .setOptions({
                     prefixStateName : 'app',
                     includeAbstract : true,
-                    template : '<li class="breadcrumb-item" ng-repeat="step in steps" ng-class="{active: $last}" ng-switch="$last || !!step.abstract"><a ng-switch-when="false" href="{{step.ncyBreadcrumbLink}}">{{step.ncyBreadcrumbLabel}}</a><span ng-switch-when="true">{{step.ncyBreadcrumbLabel}}</span></li>'
+                    templateUrl: 'app/layout/breadcrumbs.html'
                 });
 
         // default state
@@ -22,7 +22,7 @@
             abstract : true,
             templateUrl : 'app/layout/layout.html',
             ncyBreadcrumb : {
-                label : 'Root',
+                label : 'RPC',
                 skip : true
             }
         }, {
