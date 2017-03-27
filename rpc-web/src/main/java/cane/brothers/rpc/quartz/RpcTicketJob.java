@@ -28,6 +28,6 @@ public class RpcTicketJob implements Job {
         if (context.getTrigger() instanceof SimpleTrigger) {
             log.info("Simple Quartz Job started");
         }
-        task.print();
+        task.execute();
     }
 }

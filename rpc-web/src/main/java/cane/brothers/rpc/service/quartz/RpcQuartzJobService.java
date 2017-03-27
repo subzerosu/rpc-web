@@ -35,6 +35,8 @@ public class RpcQuartzJobService implements JobService {
     @Autowired
     private SchedulerFactoryBean schedulerFactory;
 
+    private static final long IN_HOURS = 60 * 60 * 1000l;
+
     /**
      * configure job bean
      *
@@ -101,13 +103,14 @@ public class RpcQuartzJobService implements JobService {
     private SimpleTriggerFactoryBean createTriggerFactory(TriggerKey triggerKey, long repeatInterval,
             JobDetail jobDetail)
             throws SchedulerException {
+        // TriggerBuilder<Trigger>.
         SimpleTriggerFactoryBean trigger = null;
         if (triggerKey != null) {
             trigger = new SimpleTriggerFactoryBean();
 
             trigger.setJobDetail(jobDetail);
             trigger.setStartDelay(3000);
-            trigger.setRepeatInterval(repeatInterval * 1000L);
+            trigger.setRepeatInterval(repeatInterval * IN_HOURS);
             trigger.setName(triggerKey.getName());
             trigger.setGroup(triggerKey.getGroup());
             trigger.afterPropertiesSet();

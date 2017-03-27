@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import cane.brothers.rpc.config.RpcProperties;
 import cane.brothers.rpc.data.PostEntry;
@@ -27,111 +28,118 @@ import cane.brothers.rpc.data.TreatmentPostEntry;
 @Service
 public class RpcBatchService implements RpcBatch {
 
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private RpcProperties rpcProps;
+    @Autowired
+    private RpcProperties rpcProps;
 
-	@Override
-	public String sendRequest(Set<PostEntry> barcodes) {
-		String ticketId = null;
-		if (barcodes != null) {
-			try {
-				ItemDataService service = new ItemDataService();
-				FederalClient client = service.getItemDataServicePort();
+    @Override
+    public String sendRequest(Set<PostEntry> barcodes) {
+        String ticketId = null;
 
-				TicketRequest ticketRequest = new TicketRequest();
-				ticketRequest.setLogin(rpcProps.getLogin());
-				ticketRequest.setPassword(rpcProps.getPassword());
+        if (CollectionUtils.isEmpty(barcodes)) {
+            logger.warn("Список баркодов пуст. Нечего обрабатывать!");
+        }
 
-				File request = new File();
-				request.setFileName("req1");
+        else {
+            try {
+                ItemDataService service = new ItemDataService();
+                FederalClient client = service.getItemDataServicePort();
 
-				for (PostEntry barcode : barcodes) {
-					Item item = new Item();
-					item.setBarcode(barcode.getBarcode());
-					request.getItem().add(item);
-				}
+                TicketRequest ticketRequest = new TicketRequest();
+                ticketRequest.setLogin(rpcProps.getLogin());
+                ticketRequest.setPassword(rpcProps.getPassword());
 
-				ticketRequest.setRequest(request);
-				TicketResponse ticketResponse = client.getTicket(ticketRequest);
+                File request = new File();
+                request.setFileName("req1");
 
-				ticketId = ticketResponse.getValue();
-				logger.info("ticket: " + ticketId);
+                for (PostEntry barcode : barcodes) {
+                    Item item = new Item();
+                    item.setBarcode(barcode.getBarcode());
+                    request.getItem().add(item);
+                }
 
-				Error err = ticketResponse.getError();
-				if (err != null) {
-					logger.error(err.getErrorTypeID() + ": " + err.getErrorName());
-				}
+                ticketRequest.setRequest(request);
+                TicketResponse ticketResponse = client.getTicket(ticketRequest);
 
-			} catch (Exception ex) {
-				logger.error(ex.getMessage());
-			}
-		}
+                ticketId = ticketResponse.getValue();
+                logger.info("ticket: " + ticketId);
 
-		return ticketId;
-	}
+                Error err = ticketResponse.getError();
+                if (err != null) {
+                    logger.error(err.getErrorTypeID() + ": " + err.getErrorName());
+                }
 
-	@Override
-	public Set<PostEntry> getResponce(String ticket) {
-		Set<PostEntry> barcodes = new HashSet<>();
-		if (ticket != null) {
-			try {
+            }
+            catch (Exception ex) {
+                logger.error(ex.getMessage());
+            }
+        }
 
-				ItemDataService service = new ItemDataService();
-				FederalClient client = service.getItemDataServicePort();
+        return ticketId;
+    }
 
-				// AnswerByTicketResponse ticketResponce = new
-				// AnswerByTicketResponse();
-				// ticketResponce.setValue(value);
-				AnswerByTicketRequest ticketRequest = new AnswerByTicketRequest();
-				ticketRequest.setLogin(rpcProps.getLogin());
-				ticketRequest.setPassword(rpcProps.getPassword());
+    @Override
+    public Set<PostEntry> getResponce(String ticket) {
+        Set<PostEntry> barcodes = new HashSet<>();
+        if (ticket != null) {
+            try {
 
-				// TODO validate ticket format
-				ticketRequest.setTicket(ticket);
+                ItemDataService service = new ItemDataService();
+                FederalClient client = service.getItemDataServicePort();
 
-				AnswerByTicketResponse ticketResponce = client.getResponseByTicket(ticketRequest);
+                // AnswerByTicketResponse ticketResponce = new
+                // AnswerByTicketResponse();
+                // ticketResponce.setValue(value);
+                AnswerByTicketRequest ticketRequest = new AnswerByTicketRequest();
+                ticketRequest.setLogin(rpcProps.getLogin());
+                ticketRequest.setPassword(rpcProps.getPassword());
 
-				if (ticketResponce != null) {
-					if (ticketResponce.getError() != null) {
-						logger.error(ticketResponce.getError().getErrorName() + " ("
-								+ ticketResponce.getError().getErrorTypeID() + ")");
-					}
+                // TODO validate ticket format
+                ticketRequest.setTicket(ticket);
 
-					else {
-						File responce = ticketResponce.getValue();
+                AnswerByTicketResponse ticketResponce = client.getResponseByTicket(ticketRequest);
 
-						// logger.debug(responce);
-						for (Item item : responce.getItem()) {
-							// TODO connect with order
-							TreatmentPostEntry barcode = new TreatmentPostEntry(
-									new PostEntry(item.getBarcode(), null, null), true);
+                if (ticketResponce != null) {
+                    if (ticketResponce.getError() != null) {
+                        logger.error(ticketResponce.getError().getErrorName() + " ("
+                                + ticketResponce.getError().getErrorTypeID() + ")");
+                    }
 
-							// copy errors
-							if (!item.getError().isEmpty()) {
-								for (Error e : item.getError()) {
-									barcode.getErrors().add(new PostError(e.getErrorTypeID(), e.getErrorName()));
-								}
-							}
+                    else {
+                        File responce = ticketResponce.getValue();
 
-							// copy operations
-							if (!item.getOperation().isEmpty()) {
-								for (Operation op : item.getOperation()) {
-									barcode.getOperations().add(new PostOperation(op.getOperTypeID(), op.getOperCtgID(),
-											op.getOperName(), op.getDateOper(), op.getIndexOper()));
-								}
-							}
+                        // logger.debug(responce);
+                        for (Item item : responce.getItem()) {
+                            // TODO connect with order
+                            TreatmentPostEntry barcode = new TreatmentPostEntry(
+                                    new PostEntry(item.getBarcode(), null, null), true);
 
-							barcodes.add(barcode);
-						}
-					}
-				}
+                            // copy errors
+                            if (!item.getError().isEmpty()) {
+                                for (Error e : item.getError()) {
+                                    barcode.getErrors().add(new PostError(e.getErrorTypeID(), e.getErrorName()));
+                                }
+                            }
 
-			} catch (Exception ex) {
-				logger.error(ex.getMessage());
-			}
-		}
-		return barcodes;
-	}
+                            // copy operations
+                            if (!item.getOperation().isEmpty()) {
+                                for (Operation op : item.getOperation()) {
+                                    barcode.getOperations().add(new PostOperation(op.getOperTypeID(), op.getOperCtgID(),
+                                            op.getOperName(), op.getDateOper(), op.getIndexOper()));
+                                }
+                            }
+
+                            barcodes.add(barcode);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex) {
+                logger.error(ex.getMessage());
+            }
+        }
+        return barcodes;
+    }
 }
