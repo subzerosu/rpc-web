@@ -18,13 +18,17 @@
 		<div id="navbar" class="navbar-collapse collapse"
 			aria-expanded="false" style="height: 1px;">
 			<ul class="nav navbar-nav">
-				<li ui-sref-active="active">
+				<li ng-show="authenticated"
+					ui-sref-active="active">
 					<a ui-sref="app.dashboard">Главная</a>
 				</li>
-				<li ui-sref-active="active">
+				<li ng-show="authenticated"
+					ui-sref-active="active">
 					<a ui-sref="app.tasks">Задания</a>
 				</li>
-				<li><a href="#config">Настройки</a></li>
+				<li ng-show="authenticated">
+					<a href="#config">Настройки</a>
+				</li>
 			</ul>
 		</div>
 		<!--/.nav-collapse -->

@@ -1,2 +1,12 @@
 <h2>Главная</h2>
-<h3>В разработке!</h3>
+
+<div class="container">
+    <ul class="nav nav-pills" role="tablist">
+        <li>
+            <a href="/login">Войти</a>
+        </li>
+        <li ng-show="authenticated">
+            <a href="" ng-click="$ctrl.logout()">Выйти</a>
+        </li>
+    </ul>
+</div>
