@@ -1,19 +1,17 @@
 package cane.brothers.rpc.service.sheets;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import cane.brothers.rpc.config.GoogleProperties;
+import cane.brothers.rpc.service.GoogleConnection;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.ValueRange;
-
-import cane.brothers.rpc.config.GoogleProperties;
-import cane.brothers.rpc.service.GoogleConnection;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Сервис который позволяет читать сырые данные из google-таблиц. Нужно знать
@@ -36,7 +34,7 @@ public class GoogleSheetsService implements GoogleSheets {
 
     @Override
     public List<List<Object>> readTable() throws IOException {
-        List<List<Object>> table = new ArrayList<List<Object>>();
+        List<List<Object>> table = new ArrayList<>();
         Sheets service = google.getSheetsService();
         if (google != null) {
             table = readTable(service, properties.getId(), properties.getSheet().getName());

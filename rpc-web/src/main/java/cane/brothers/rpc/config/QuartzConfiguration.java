@@ -10,6 +10,7 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +36,7 @@ public class QuartzConfiguration {
 
     // register all triggers and details here
     @Bean
-    public SchedulerFactoryBean schedulerFactory(DataSource dataSource, ApplicationContext applicationContext)
+    public SchedulerFactoryBean schedulerFactory(@Qualifier("dataSource") DataSource dataSource, ApplicationContext applicationContext)
             throws SchedulerException {
         SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
 
@@ -45,6 +46,9 @@ public class QuartzConfiguration {
         // custom job factory of spring with DI support for @Autowired!
         schedulerFactory.setJobFactory(jobFactory());
         schedulerFactory.setQuartzProperties(quartzProperties());
+
+        // set app context
+        schedulerFactory.setApplicationContext(applicationContext);
 
         // set on demand
         // schedulerFactory.setTriggers(simpleTriggerFactory().getObject());
