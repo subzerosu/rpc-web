@@ -1,20 +1,15 @@
 package cane.brothers.rpc.service.sheets;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-
+import cane.brothers.rpc.data.InvalidPostEntry;
+import cane.brothers.rpc.data.InvalidReasons;
+import cane.brothers.rpc.data.PostEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cane.brothers.rpc.data.InvalidPostEntry;
-import cane.brothers.rpc.data.InvalidReasons;
-import cane.brothers.rpc.data.PostEntry;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class RpcSheetsService implements RpcSheets {
@@ -26,7 +21,7 @@ public class RpcSheetsService implements RpcSheets {
 
     @Override
     public Set<PostEntry> getPostEntries() {
-        Set<PostEntry> barcodes = new TreeSet<PostEntry>();
+        Set<PostEntry> barcodes = new TreeSet<>();
         if (log.isDebugEnabled()) {
             log.debug("Берем данные из таблицы в виде списка");
         }
@@ -51,7 +46,7 @@ public class RpcSheetsService implements RpcSheets {
      * @return
      */
     private Set<PostEntry> castTable(List<List<Object>> table) {
-        Set<PostEntry> barcodes = new TreeSet<PostEntry>();
+        Set<PostEntry> barcodes = new TreeSet<>();
 
         int rows = (table == null ? 0 : table.size());
         // messages.addMessage1("В таблице баркодов " + rows + " строк.");

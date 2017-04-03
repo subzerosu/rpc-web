@@ -1,14 +1,12 @@
 package cane.brothers.rpc.service.fc;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import cane.brothers.rpc.config.RpcProperties;
+import cane.brothers.rpc.data.PostEntry;
+import cane.brothers.rpc.data.PostError;
+import cane.brothers.rpc.data.PostOperation;
+import cane.brothers.rpc.data.TreatmentPostEntry;
 import org.russianpost.fclient.Error;
-import org.russianpost.fclient.FederalClient;
-import org.russianpost.fclient.File;
-import org.russianpost.fclient.Item;
-import org.russianpost.fclient.ItemDataService;
-import org.russianpost.fclient.Operation;
+import org.russianpost.fclient.*;
 import org.russianpost.fclient.postserver.AnswerByTicketRequest;
 import org.russianpost.fclient.postserver.AnswerByTicketResponse;
 import org.russianpost.fclient.postserver.TicketRequest;
@@ -19,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import cane.brothers.rpc.config.RpcProperties;
-import cane.brothers.rpc.data.PostEntry;
-import cane.brothers.rpc.data.PostError;
-import cane.brothers.rpc.data.PostOperation;
-import cane.brothers.rpc.data.TreatmentPostEntry;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class RpcBatchService implements RpcBatch {

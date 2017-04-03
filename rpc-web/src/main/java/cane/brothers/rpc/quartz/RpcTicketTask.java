@@ -1,19 +1,17 @@
 package cane.brothers.rpc.quartz;
 
-import java.io.Serializable;
-import java.util.Set;
-
+import cane.brothers.rpc.data.PostEntry;
+import cane.brothers.rpc.service.fc.RpcBatch;
+import cane.brothers.rpc.service.sheets.RpcSheets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import cane.brothers.rpc.data.PostEntry;
-import cane.brothers.rpc.service.fc.RpcBatch;
-import cane.brothers.rpc.service.sheets.RpcSheets;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
- *
  * @author cane
  */
 @Component("task")
