@@ -63,20 +63,22 @@ public class RpcQuartzController {
         TriggerKey triggerKey = new TriggerKey(defaultTriggerName, RpcUtils.getGroupName());
 
         jobService.createJob(triggerKey, defaultTriggerInterval);
-        if (jobService.startJob(triggerKey, defaultTriggerInterval)) {
-            return new ResponseEntity<String>("job have been started.", HttpStatus.OK);
-        }
-        return new ResponseEntity<String>("failed to start job", HttpStatus.ACCEPTED);
+        // TODO clean-up
+//        if (jobService.startJob(triggerKey, defaultTriggerInterval)) {
+//            return new ResponseEntity<String>("job have been started.", HttpStatus.OK);
+//        }
+        return new ResponseEntity<>("failed to start job", HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/stop")
     public ResponseEntity<String> stopTask() throws SchedulerException {
         // TODO real trigger name
         TriggerKey triggerKey = new TriggerKey(defaultTriggerName, RpcUtils.getGroupName());
-        if (jobService.stopJob(triggerKey)) {
-            return new ResponseEntity<String>("job have been stoped.", HttpStatus.OK);
-        }
-        return new ResponseEntity<String>("failed to stop job", HttpStatus.ACCEPTED);
+        // TODO clean-up
+//        if (jobService.stopJob(triggerKey)) {
+//            return new ResponseEntity<String>("job have been stoped.", HttpStatus.OK);
+//        }
+        return new ResponseEntity<>("failed to stop job", HttpStatus.ACCEPTED);
     }
 
     /*

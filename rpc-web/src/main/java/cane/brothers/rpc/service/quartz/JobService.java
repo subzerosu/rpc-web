@@ -1,6 +1,7 @@
 package cane.brothers.rpc.service.quartz;
 
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
@@ -11,9 +12,9 @@ public interface JobService {
 
     boolean createJob(TriggerKey triggerKey, long repeatInterval);
 
-    boolean startJob(TriggerKey triggerKey, long newInterval);
+    Future<Boolean> startJob(TriggerKey triggerKey, long newInterval);
 
-    boolean stopJob(TriggerKey triggerKey);
+    Future<Boolean> stopJob(TriggerKey triggerKey);
 
     boolean resetJob(TriggerKey triggerKey, Long newInterval);
 

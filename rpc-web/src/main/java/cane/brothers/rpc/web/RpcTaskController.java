@@ -1,28 +1,31 @@
 package cane.brothers.rpc.web;
 
-import java.util.Set;
-
+import cane.brothers.rpc.data.TaskEntry;
+import cane.brothers.rpc.data.quartz.RpcTaskOperation;
+import cane.brothers.rpc.data.quartz.TaskDto;
+import cane.brothers.rpc.data.quartz.TaskOperationDto;
+import cane.brothers.rpc.repo.RpcTaskRepository;
+import cane.brothers.rpc.service.GoogleConnection;
+import cane.brothers.rpc.service.quartz.JobService;
+import cane.brothers.rpc.service.quartz.TaskService;
 import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.web.bind.annotation.*;
 
-import cane.brothers.rpc.data.TaskEntry;
-import cane.brothers.rpc.data.quartz.RpcTaskOperation;
-import cane.brothers.rpc.data.quartz.TaskDto;
-import cane.brothers.rpc.data.quartz.TaskOperationDto;
-import cane.brothers.rpc.repo.RpcTaskRepository;
-import cane.brothers.rpc.service.quartz.JobService;
-import cane.brothers.rpc.service.quartz.TaskService;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping(value = "/api/rpc/tasks")
@@ -39,6 +42,13 @@ public class RpcTaskController extends BaseController {
     @Autowired
     private RpcTaskRepository taskRepo;
 
+    @Autowired
+    private GoogleConnection google;
+
+    @Autowired
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    OAuth2ClientContext oauth2ClientContext;
+
     @PostMapping()
     public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto task) {
         HttpStatus status = HttpStatus.OK;
@@ -47,7 +57,7 @@ public class RpcTaskController extends BaseController {
             status = HttpStatus.CONFLICT;
         }
 
-        return new ResponseEntity<TaskDto>(resultTask, status);
+        return new ResponseEntity<>(resultTask, status);
     }
 
     @GetMapping()
@@ -57,7 +67,7 @@ public class RpcTaskController extends BaseController {
         if (tasks.isEmpty()) {
             status = HttpStatus.NO_CONTENT;
         }
-        return new ResponseEntity<Set<TaskDto>>(tasks, status);
+        return new ResponseEntity<>(tasks, status);
     }
 
     // TODO deny access to the foreign tasks
@@ -74,13 +84,12 @@ public class RpcTaskController extends BaseController {
                 status = HttpStatus.NO_CONTENT;
             }
         }
-        return new ResponseEntity<TaskDto>(task, status);
+        return new ResponseEntity<>(task, status);
     }
 
     /**
      * Fetch current task operation.
      *
-     * @param oper
      * @param taskId
      * @return
      */
@@ -99,7 +108,7 @@ public class RpcTaskController extends BaseController {
             status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<TaskOperationDto>(new TaskOperationDto(oper), status);
+        return new ResponseEntity<>(new TaskOperationDto(oper), status);
     }
 
     /**
@@ -110,10 +119,15 @@ public class RpcTaskController extends BaseController {
      * @return
      */
     @PutMapping("/{taskId}/operation")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TaskOperationDto> performTaskOperation(@RequestBody TaskOperationDto oper,
-            @PathVariable Integer taskId) {
+            @PathVariable Integer taskId) throws ExecutionException, InterruptedException {
         HttpStatus status = HttpStatus.OK;
         RpcTaskOperation taskOper = RpcTaskOperation.UNDEFINED;
+
+        log.info("AccessToken    " + oauth2ClientContext.getAccessToken());
+        google.setAccessToken(oauth2ClientContext.getAccessToken());
+        printAccessToken();
 
         TaskEntry task = taskRepo.findOne(taskId);
         if (task != null) {
@@ -125,7 +139,12 @@ public class RpcTaskController extends BaseController {
             }
 
             else if (RpcTaskOperation.START.toString().equals(oper.getOperation())) {
-                if (jobService.startJob(triggerKey, task.getInterval())) {
+                Future<Boolean> result = jobService.startJob(triggerKey, task.getInterval());
+                while (!result.isDone()) {
+                    Thread.sleep(100);
+                }
+
+                if (result.get()) {
                     taskOper = RpcTaskOperation.START;
                 }
                 else {
@@ -134,7 +153,12 @@ public class RpcTaskController extends BaseController {
             }
 
             else if (RpcTaskOperation.STOP.toString().equals(oper.getOperation())) {
-                if (jobService.stopJob(triggerKey)) {
+                Future<Boolean> result = jobService.stopJob(triggerKey);
+                while (!result.isDone()) {
+                    Thread.sleep(100);
+                }
+
+                if (result.get()) {
                     taskOper = RpcTaskOperation.STOP;
                 }
                 else {
@@ -152,6 +176,24 @@ public class RpcTaskController extends BaseController {
             status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<TaskOperationDto>(new TaskOperationDto(taskOper), status);
+        return new ResponseEntity<>(new TaskOperationDto(taskOper), status);
+    }
+
+    private void printAccessToken() {
+        // TODO
+        SecurityContext sContext = SecurityContextHolder.getContext();
+        Authentication principal = sContext.getAuthentication();
+        log.info("Authentication " + SecurityContextHolder.getContext().getAuthentication());
+
+        if (principal instanceof OAuth2Authentication) {
+            OAuth2Authentication authentication = (OAuth2Authentication) principal;
+            Object details = authentication.getDetails();
+            log.info("details " + details);
+
+            if (details instanceof OAuth2AuthenticationDetails) {
+                OAuth2AuthenticationDetails oauthsDetails = (OAuth2AuthenticationDetails) details;
+                log.info("token " + oauthsDetails.getTokenValue());
+            }
+        }
     }
 }

@@ -1,28 +1,26 @@
 package cane.brothers.rpc.service.quartz;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import cane.brothers.rpc.RpcUtils;
+import cane.brothers.rpc.data.quartz.RpcTaskOperation;
+import cane.brothers.rpc.quartz.RpcTicketJob;
+import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
-import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import org.springframework.stereotype.Service;
 
-import cane.brothers.rpc.RpcUtils;
-import cane.brothers.rpc.data.quartz.RpcTaskOperation;
-import cane.brothers.rpc.quartz.RpcTicketJob;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
 
 @Service
 public class RpcQuartzJobService implements JobService {
@@ -32,6 +30,7 @@ public class RpcQuartzJobService implements JobService {
     @Value("${cane.brothers.quartz.job.name}")
     private String defaultJobName;
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private SchedulerFactoryBean schedulerFactory;
 
@@ -126,8 +125,9 @@ public class RpcQuartzJobService implements JobService {
         return (trigger == null ? false : true);
     }
 
+    @Async
     @Override
-    public boolean startJob(TriggerKey triggerKey, long newInterval) {
+    public Future<Boolean> startJob(TriggerKey triggerKey, long newInterval) {
         JobDetail jobDetail = getOrCreateJobDetail();
         Trigger trigger = getOrCreateTrigger(triggerKey, newInterval, jobDetail);
 
@@ -163,12 +163,33 @@ public class RpcQuartzJobService implements JobService {
             if (!schedulerFactory.getScheduler().isStarted()) {
                 schedulerFactory.getScheduler().start();
             }
-            return true;
+            return new AsyncResult<>(new Boolean(true));
         }
         catch (SchedulerException ex) {
             logger.error("Cannot start sheduler", ex);
         }
-        return false;
+        return new AsyncResult<>(new Boolean(false));
+    }
+
+
+    @Async
+    @Override
+    public Future<Boolean> stopJob(TriggerKey triggerKey) {
+        try {
+            // удаляем у Job триггер, чистим за ним в БД
+            if (schedulerFactory.getScheduler().unscheduleJob(triggerKey)) {
+                logger.error("Job {} was stoped", triggerKey);
+                return new AsyncResult<>(new Boolean(true));
+            }
+            else {
+                logger.error("Cannot stop {}", triggerKey);
+                return new AsyncResult<>(new Boolean(false));
+            }
+        }
+        catch (SchedulerException ex) {
+            logger.error("Cannot start sheduler", ex);
+        }
+        return new AsyncResult<>(new Boolean(false));
     }
 
     @Override
@@ -203,24 +224,6 @@ public class RpcQuartzJobService implements JobService {
         return jobDetail != null && !schedulerFactory.getScheduler().checkExists(jobDetail.getKey());
     }
 
-    @Override
-    public boolean stopJob(TriggerKey triggerKey) {
-        try {
-            // удаляем у Job триггер, чистим за ним в БД
-            if (schedulerFactory.getScheduler().unscheduleJob(triggerKey)) {
-                logger.error("Job {} was stoped", triggerKey);
-                return true;
-            }
-            else {
-                logger.error("Cannot stop {}", triggerKey);
-                return false;
-            }
-        }
-        catch (SchedulerException ex) {
-            logger.error("Cannot start sheduler", ex);
-        }
-        return false;
-    }
 
     @Override
     public Set<TriggerKey> getTriggersByGroup(String triggerGroup) {
