@@ -5,7 +5,7 @@ import cane.brothers.rpc.data.quartz.RpcTaskOperation;
 import cane.brothers.rpc.data.quartz.TaskDto;
 import cane.brothers.rpc.data.quartz.TaskOperationDto;
 import cane.brothers.rpc.repo.RpcTaskRepository;
-import cane.brothers.rpc.service.GoogleConnection;
+import cane.brothers.rpc.service.google.GoogleConnection;
 import cane.brothers.rpc.service.quartz.JobService;
 import cane.brothers.rpc.service.quartz.TaskService;
 import org.quartz.TriggerKey;
@@ -47,7 +47,7 @@ public class RpcTaskController extends BaseController {
 
     @Autowired
     @SuppressWarnings("SpringJavaAutowiringInspection")
-    OAuth2ClientContext oauth2ClientContext;
+    private OAuth2ClientContext oauth2ClientContext;
 
     @PostMapping()
     public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto task) {

@@ -1,6 +1,5 @@
 package cane.brothers.rpc.service.fc;
 
-import cane.brothers.rpc.config.RpcProperties;
 import cane.brothers.rpc.data.PostEntry;
 import cane.brothers.rpc.data.PostError;
 import cane.brothers.rpc.data.PostOperation;
@@ -13,7 +12,6 @@ import org.russianpost.fclient.postserver.TicketRequest;
 import org.russianpost.fclient.postserver.TicketResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,9 +22,6 @@ import java.util.Set;
 public class RpcBatchService implements RpcBatch {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private RpcProperties rpcProps;
 
     @Override
     public String sendRequest(Set<PostEntry> barcodes) {
@@ -41,9 +36,7 @@ public class RpcBatchService implements RpcBatch {
                 ItemDataService service = new ItemDataService();
                 FederalClient client = service.getItemDataServicePort();
 
-                TicketRequest ticketRequest = new TicketRequest();
-                ticketRequest.setLogin(rpcProps.getLogin());
-                ticketRequest.setPassword(rpcProps.getPassword());
+                TicketRequest ticketRequest = FcFactory.getTicketRequest();
 
                 File request = new File();
                 request.setFileName("req1");
@@ -77,20 +70,16 @@ public class RpcBatchService implements RpcBatch {
     @Override
     public Set<PostEntry> getResponce(String ticket) {
         Set<PostEntry> barcodes = new HashSet<>();
+
+        // TODO validate ticket format
+
         if (ticket != null) {
             try {
 
                 ItemDataService service = new ItemDataService();
                 FederalClient client = service.getItemDataServicePort();
 
-                // AnswerByTicketResponse ticketResponce = new
-                // AnswerByTicketResponse();
-                // ticketResponce.setValue(value);
-                AnswerByTicketRequest ticketRequest = new AnswerByTicketRequest();
-                ticketRequest.setLogin(rpcProps.getLogin());
-                ticketRequest.setPassword(rpcProps.getPassword());
-
-                // TODO validate ticket format
+                AnswerByTicketRequest ticketRequest = FcFactory.getTicketAnswerRequest();
                 ticketRequest.setTicket(ticket);
 
                 AnswerByTicketResponse ticketResponce = client.getResponseByTicket(ticketRequest);

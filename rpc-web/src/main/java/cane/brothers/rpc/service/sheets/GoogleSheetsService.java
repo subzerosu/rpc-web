@@ -1,7 +1,7 @@
 package cane.brothers.rpc.service.sheets;
 
 import cane.brothers.rpc.config.GoogleProperties;
-import cane.brothers.rpc.service.GoogleConnection;
+import cane.brothers.rpc.service.google.GoogleConnection;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import org.slf4j.Logger;
