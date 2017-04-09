@@ -18,7 +18,7 @@ import java.net.Proxy;
  * Created by mniedre on 04.04.2017.
  */
 @Configuration
-@ConditionalOnProperty(prefix = "http", name = "proxyHost")
+@ConditionalOnProperty(prefix = "http", name = "proxyHost", matchIfMissing = true)
 @EnableConfigurationProperties(ProxyProperties.class)
 public class ProxyAutoConfiguration {
 
@@ -36,7 +36,9 @@ public class ProxyAutoConfiguration {
                 connection.setUseCaches(false);
             }
         };
-        factory.setProxy(getProxy());
+        if(properties.getProxyHost() != null) {
+            factory.setProxy(getProxy());
+        }
         return factory;
     }
 
