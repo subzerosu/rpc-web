@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author cane
@@ -38,14 +39,29 @@ public class RpcTicketTask implements Serializable {
         String ticket = rpcBatch.sendRequest(barcodes);
 
         // 3. delay
+        waitForTicket();
+
 
         // 4. получить операции по тикету
         Set<PostEntry> ticketResponce = rpcBatch.getResponce(ticket);
 
         // TODO
-        // 5. обработать операции
+        // 5. store into db
 
         // TODO
-        // 6. подготовить и отправить результаты проверки письмом
+        // 6. обработать операции
+
+        // TODO
+        // 7. подготовить и отправить результаты проверки письмом
+    }
+
+    private void waitForTicket() {
+        try {
+            log.info("Ожидаем обработки тикета 15 мин.");
+            TimeUnit.MINUTES.sleep(15);
+        } catch(InterruptedException ex) {
+            log.info("С потоком что-то не так. обрываем", ex);
+            Thread.currentThread().interrupt();
+        }
     }
 }
