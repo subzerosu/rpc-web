@@ -2,6 +2,7 @@ package cane.brothers.rpc.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -42,16 +43,16 @@ public class GoogleController extends BaseController {
 		responseBody.add(properties.getSheet().getName());
 		logger.info("responce " + responseBody);
 
-		return new ResponseEntity<List<String>>(responseBody, HttpStatus.OK);
+		return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/table")
-	public ResponseEntity<Set<PostEntry>> readTable() {
+	public ResponseEntity<Map<String, PostEntry>> readTable() {
 		logger.info(" get '/api/table'");
 
-		Set<PostEntry> table = sheets.getPostEntries();
+		Map<String, PostEntry> table = sheets.getPostEntries();
 
-		return new ResponseEntity<Set<PostEntry>>(table, HttpStatus.OK);
+		return new ResponseEntity<>(table, HttpStatus.OK);
 	}
 
 }

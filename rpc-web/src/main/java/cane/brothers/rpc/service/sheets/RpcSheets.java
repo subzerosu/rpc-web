@@ -1,5 +1,6 @@
 package cane.brothers.rpc.service.sheets;
 
+import java.util.Map;
 import java.util.Set;
 
 import cane.brothers.rpc.data.PostEntry;
@@ -17,7 +18,7 @@ public interface RpcSheets {
      *
      * @return
      */
-    Set<PostEntry> getPostEntries();
+    Map<String, PostEntry> getPostEntries();
 
     /**
      * @param oldEntries

@@ -20,8 +20,8 @@ public class RpcSheetsService implements RpcSheets {
     private GoogleSheets googleSheet;
 
     @Override
-    public Set<PostEntry> getPostEntries() {
-        Set<PostEntry> barcodes = new TreeSet<>();
+    public Map<String, PostEntry> getPostEntries() {
+        Map<String, PostEntry> barcodes = new TreeMap<>();
         if (log.isDebugEnabled()) {
             log.debug("Берем данные из таблицы в виде списка");
         }
@@ -45,8 +45,9 @@ public class RpcSheetsService implements RpcSheets {
      * @param table
      * @return
      */
-    private Set<PostEntry> castTable(List<List<Object>> table) {
-        Set<PostEntry> barcodes = new TreeSet<>();
+    private Map<String, PostEntry> castTable(List<List<Object>> table) {
+        //Set<PostEntry> barcodes = new TreeSet<>();
+        Map<String, PostEntry> barcodes = new HashMap<>();
 
         int rows = (table == null ? 0 : table.size());
         // messages.addMessage1("В таблице баркодов " + rows + " строк.");
@@ -68,7 +69,8 @@ public class RpcSheetsService implements RpcSheets {
                         }
                         else {
                             PostEntry pe = new PostEntry(barcode, article, date);
-                            if (!barcodes.add(pe)) {
+                            //if (!barcodes.add(pe)) {
+                            if(barcodes.put(barcode, pe) != null) {
                                 doubledBarcodes.add(new InvalidPostEntry(pe, InvalidReasons.DUPLICATE));
                                 log.warn("Баркод {} в наборе уже существует.", barcode);
                             }

@@ -11,7 +11,7 @@ public class PostEntry implements Comparable<PostEntry> {
 	protected String barcode;
 	protected String article;
 	protected String date;
-	protected boolean needAttetion = false;
+	protected boolean needAttention = false;
 	
 	/**
 	 * default constructor
@@ -26,16 +26,16 @@ public class PostEntry implements Comparable<PostEntry> {
 	 * @param postEtrty not null post entry
 	 */
 	public PostEntry(PostEntry postEtrty) {
-		this(postEtrty.getBarcode(), postEtrty.getArticle(), postEtrty.getDate(), postEtrty.isNeedAttetion());
+		this(postEtrty.getBarcode(), postEtrty.getArticle(), postEtrty.getDate(), postEtrty.isNeedAttention());
 	}
 	
 	
 	/**
 	 * @param postEtrty
-	 * @param isNeedAttetion
+	 * @param isNeedAttention
 	 */
-	public PostEntry(PostEntry postEtrty, boolean isNeedAttetion) {
-		this(postEtrty.getBarcode(), postEtrty.getArticle(), postEtrty.getDate(), isNeedAttetion);
+	public PostEntry(PostEntry postEtrty, boolean isNeedAttention) {
+		this(postEtrty.getBarcode(), postEtrty.getArticle(), postEtrty.getDate(), isNeedAttention);
 	}
 	
 	/**
@@ -56,14 +56,14 @@ public class PostEntry implements Comparable<PostEntry> {
 	 * @param barcode
 	 * @param article
 	 * @param date
-	 * @param needAttetion
+	 * @param needAttention
 	 */
-	public PostEntry(String barcode, String article, String date, boolean needAttetion) {
+	public PostEntry(String barcode, String article, String date, boolean needAttention) {
 		super();
 		this.barcode = barcode;
 		this.article = article;
 		this.date = date;
-		this.needAttetion = needAttetion;
+		this.needAttention = needAttention;
 	}
 
 
@@ -91,12 +91,12 @@ public class PostEntry implements Comparable<PostEntry> {
 		this.date = date;
 	}
 
-	public boolean isNeedAttetion() {
-		return needAttetion;
+	public boolean isNeedAttention() {
+		return needAttention;
 	}
 
-	public void setNeedAttetion(boolean needAttetion) {
-		this.needAttetion = needAttetion;
+	public void setNeedAttention(boolean needAttention) {
+		this.needAttention = needAttention;
 	}
 
 	@Override

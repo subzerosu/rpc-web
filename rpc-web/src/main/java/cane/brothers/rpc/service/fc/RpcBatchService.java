@@ -13,117 +13,85 @@ import org.russianpost.fclient.postserver.TicketResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
+import javax.xml.ws.WebServiceException;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 public class RpcBatchService implements RpcBatch {
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private FederalClient federalClient = null;
 
     @Override
-    public String sendRequest(Set<PostEntry> barcodes) {
+    public boolean autorize() {
+        try {
+            if (log.isInfoEnabled()) {
+                log.info("Подключаюсь к сервису почтовых отправлений...");
+            }
+
+            ItemDataService service = new ItemDataService();
+            federalClient = service.getItemDataServicePort();
+
+            if (log.isInfoEnabled()) {
+                log.info("Подключились.");
+            }
+        } catch (WebServiceException ex) {
+            log.error("Проблемы с доступом к сервису почтовых отправлений.", ex.getMessage());
+            log.info("Попробуйте еще раз позднее.");
+            federalClient = null;
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String sendRequest(TicketRequest ticketRequest) {
         String ticketId = null;
 
-        if (CollectionUtils.isEmpty(barcodes)) {
-            logger.warn("Список баркодов пуст. Нечего обрабатывать!");
-        }
+        try {
+            TicketResponse ticketResponse = federalClient.getTicket(ticketRequest);
+            ticketId = ticketResponse.getValue();
+            log.info("Тикет отправлен: " + ticketId);
 
-        else {
-            try {
-                ItemDataService service = new ItemDataService();
-                FederalClient client = service.getItemDataServicePort();
-
-                TicketRequest ticketRequest = FcFactory.getTicketRequest();
-
-                File request = new File();
-                request.setFileName("req1");
-
-                for (PostEntry barcode : barcodes) {
-                    Item item = new Item();
-                    item.setBarcode(barcode.getBarcode());
-                    request.getItem().add(item);
+            Error err = ticketResponse.getError();
+            if (err != null) {
+                log.warn("Есть ошибки");
+                log.error(err.getErrorTypeID() + ": " + err.getErrorName());
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Ошибок нет");
                 }
-
-                ticketRequest.setRequest(request);
-                TicketResponse ticketResponse = client.getTicket(ticketRequest);
-
-                ticketId = ticketResponse.getValue();
-                logger.info("ticket: " + ticketId);
-
-                Error err = ticketResponse.getError();
-                if (err != null) {
-                    logger.error(err.getErrorTypeID() + ": " + err.getErrorName());
-                }
-
             }
-            catch (Exception ex) {
-                logger.error(ex.getMessage());
-            }
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
         }
 
         return ticketId;
     }
 
     @Override
-    public Set<PostEntry> getResponce(String ticket) {
-        Set<PostEntry> barcodes = new HashSet<>();
+    public File getResponse(AnswerByTicketRequest ticketAnswer) {
+        File responseFile = null;
 
-        // TODO validate ticket format
+        try {
+            AnswerByTicketResponse ticketResponce = federalClient.getResponseByTicket(ticketAnswer);
 
-        if (ticket != null) {
-            try {
-
-                ItemDataService service = new ItemDataService();
-                FederalClient client = service.getItemDataServicePort();
-
-                AnswerByTicketRequest ticketRequest = FcFactory.getTicketAnswerRequest();
-                ticketRequest.setTicket(ticket);
-
-                AnswerByTicketResponse ticketResponce = client.getResponseByTicket(ticketRequest);
-
-                if (ticketResponce != null) {
-                    if (ticketResponce.getError() != null) {
-                        logger.error(ticketResponce.getError().getErrorName() + " ("
-                                + ticketResponce.getError().getErrorTypeID() + ")");
-                    }
-
-                    else {
-                        File responce = ticketResponce.getValue();
-
-                        // logger.debug(responce);
-                        for (Item item : responce.getItem()) {
-                            // TODO connect with order
-                            TreatmentPostEntry barcode = new TreatmentPostEntry(
-                                    new PostEntry(item.getBarcode(), null, null), true);
-
-                            // copy errors
-                            if (!item.getError().isEmpty()) {
-                                for (Error e : item.getError()) {
-                                    barcode.getErrors().add(new PostError(e.getErrorTypeID(), e.getErrorName()));
-                                }
-                            }
-
-                            // copy operations
-                            if (!item.getOperation().isEmpty()) {
-                                for (Operation op : item.getOperation()) {
-                                    barcode.getOperations().add(new PostOperation(op.getOperTypeID(), op.getOperCtgID(),
-                                            op.getOperName(), op.getDateOper(), op.getIndexOper()));
-                                }
-                            }
-
-                            barcodes.add(barcode);
-                        }
-                    }
+            if (ticketResponce != null) {
+                if (ticketResponce.getError() != null) {
+                    log.error("error: " + ticketResponce.getError().getErrorName() + " ("
+                            + ticketResponce.getError().getErrorTypeID() + ")");
+                } else {
+                    responseFile = ticketResponce.getValue();
                 }
+            }
 
-            }
-            catch (Exception ex) {
-                logger.error(ex.getMessage());
-            }
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
         }
-        return barcodes;
+
+        return responseFile;
     }
 }

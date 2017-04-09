@@ -1,8 +1,8 @@
 package cane.brothers.rpc.service.fc;
 
-import java.util.Set;
-
-import cane.brothers.rpc.data.PostEntry;
+import org.russianpost.fclient.File;
+import org.russianpost.fclient.postserver.AnswerByTicketRequest;
+import org.russianpost.fclient.postserver.TicketRequest;
 
 /**
  * Сервис для отслеживания ПО в пакетном режиме.
@@ -12,22 +12,29 @@ import cane.brothers.rpc.data.PostEntry;
 public interface RpcBatch {
 
 	/**
+	 * Подключаемся к сервису почтовых отправлений клиента
+	 *
+	 * @return true если клиент готов
+     */
+	boolean autorize();
+
+	/**
 	 * Отправить запрос на подготовку информации по списку идентификаторов.
 	 *
-	 * @param barcodes
+	 * @param ticketRequest
 	 *            список ПО для отправки.
 	 *
 	 * @return ticket id
 	 */
-	String sendRequest(Set<PostEntry> barcodes);
+	String sendRequest(TicketRequest ticketRequest);
 
 	/**
 	 * Опросить сервис почтовых отправлений для получения результата для ранее
 	 * отпраленного запроса.
 	 *
-	 * @param ticket
+	 * @param ticketAnswer
 	 *            id запроса
 	 * @return
 	 */
-	Set<PostEntry> getResponce(String ticket);
+	File getResponse(AnswerByTicketRequest ticketAnswer);
 }
